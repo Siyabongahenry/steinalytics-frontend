@@ -1,0 +1,9 @@
+# https://www.robotstxt.org/robotstxt.html
+# Allow search engines to crawl public pages
+User-agent: *
+Disallow: /admin/
+Disallow: /private/
+Allow: /
+
+# Sitemap location (helps Google index faster)
+Sitemap: https://www.steinalytics.com/sitemap.xml
