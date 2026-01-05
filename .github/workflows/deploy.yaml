@@ -34,6 +34,6 @@ jobs:
           role-to-assume: arn:aws:iam::092963739214:role/steinalytics-github-deployment
           aws-region: us-east-1
 
-      - name: copy build to bucket
+      - name: copy dist to bucket
         run: |
-          aws s3 sync ./build s3://steinalytics --delete
+          aws s3 sync ./dist s3://steinalytics --delete
