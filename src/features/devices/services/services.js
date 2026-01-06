@@ -12,7 +12,7 @@ const mockDevices = [
   {
     name: "Majuba-01",
     serial_no: "54648446415",
-    status:"active",
+    status:"In_Use",
     chartData: [
       { date: "2026-01-01", clockings: 5 },
       { date: "2026-01-02", clockings: 8 },
@@ -24,7 +24,7 @@ const mockDevices = [
   {
     name: "Majuba-02",
     serial_no: "54648446416",
-    status:"active",
+    status:"In_Use",
     chartData: [
       { date: "2026-01-01", clockings: 7 },
       { date: "2026-01-02", clockings: 9 },
@@ -36,7 +36,7 @@ const mockDevices = [
   {
     name: "Majuba-03",
     serial_no: "54648446417",
-    status:"faulty",
+    status:"Faulty",
     chartData: [
       { date: "2026-01-01", clockings: 0 },
       { date: "2026-01-02", clockings: 0 },
