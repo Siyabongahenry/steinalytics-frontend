@@ -4,9 +4,10 @@ const API_BASE = import.meta.env.VITE_API_URL ?? "";
 
 // Map report types to backend endpoints
 const REPORT_ENDPOINTS = {
-  "vip-validation": "/vip/validate-and-export",
-  "duplicated-hours": "/duplicates/validate-and-export",
-  "overbooking": "/overbooking/validate-and-export",
+  "vip-validation": "/vip-validation",
+  "overbooking": "/overbooking",
+  "multiple-clockings":"/multiple-clockings",
+  "exemption":"/exemption"
   // add more report types here
 };
 
