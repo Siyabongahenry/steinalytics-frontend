@@ -1,6 +1,6 @@
 import React from "react";
 
-const JournalCard = ({ title, description, icon, onClick }) => {
+const ReportCard = ({ title, description, icon, onClick }) => {
   return (
     <div
       onClick={onClick}
@@ -13,4 +13,4 @@ const JournalCard = ({ title, description, icon, onClick }) => {
   );
 };
 
-export default JournalCard;
+export default ReportCard;
