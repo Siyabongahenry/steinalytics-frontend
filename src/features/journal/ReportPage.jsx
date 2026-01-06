@@ -24,7 +24,7 @@ const reports = [
   },
 ];
 
-const JournalPage = () => {
+const ReportPage = () => {
   const [selectedReport, setSelectedReport] = useState(null);
 
   return (
@@ -52,4 +52,4 @@ const JournalPage = () => {
   );
 };
 
-export default JournalPage;
+export default ReportPage;
