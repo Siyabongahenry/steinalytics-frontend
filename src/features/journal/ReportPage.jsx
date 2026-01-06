@@ -1,25 +1,31 @@
 import React, { useState } from "react";
-import JournalCard from "./components/JournalCard";
-import JournalUploadModal from "./components/JournalUploadModal";
+import ReportCard from "./components/ReportCard";
+import ReportUploadModal from "./components/ReportUploadModal";
 import { FaUserCheck, FaCopy, FaClock } from "react-icons/fa";
 
 const reports = [
   {
     type: "vip-validation",
     title: "VIP Validation",
-    description: "Check VIP codes for shifts",
+    description: "Identify incorrect VIP Codes",
     icon: <FaUserCheck />,
   },
   {
-    type: "duplicated-hours",
-    title: "Duplicated Hours",
-    description: "Detect overlapping work hours",
-    icon: <FaCopy />,
+    type: "overbooking",
+    title: "Overbooking Reports",
+    description: "Detect overbooked employees",
+    icon: <FaClock />,
   },
   {
-    type: "overbooking",
-    title: "Overbooking",
-    description: "Detect overbooked employees",
+    type: "multiple-clockings",
+    title: "Multiple Clocking Reports",
+    description: "Detect multiple clockings",
+    icon: <FaClock />,
+  },
+  {
+    type: "exemption",
+    title: "Exemption Report",
+    description: "Employees with hours greater than 72 per week",
     icon: <FaClock />,
   },
 ];
@@ -33,7 +39,7 @@ const ReportPage = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {reports.map((report) => (
-          <JournalCard
+          <ReportCard
             key={report.type}
             title={report.title}
             description={report.description}
@@ -43,7 +49,7 @@ const ReportPage = () => {
         ))}
       </div>
 
-      <JournalUploadModal
+      <ReportUploadModal
         isOpen={!!selectedReport}
         reportType={selectedReport}
         onClose={() => setSelectedReport(null)}
