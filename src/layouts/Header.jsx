@@ -29,14 +29,22 @@ export default function Header({ setSidebarOpen }) {
       </button>
 
       {/* Branding */}
-      <div className="flex items-center gap-2">
-        <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center font-bold text-white">
-          S
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-600 to-purple-500 flex items-center justify-center shadow-md">
+          <span className="text-white font-extrabold text-lg">S</span>
         </div>
-        <h1 className="text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-300">
-          Steinalytics
-        </h1>
+
+        <div className="flex flex-col leading-none">
+          <h1 className="text-xl font-extrabold text-blue-400">
+            Steinalytics
+          </h1>
+
+          <span className="text-xs text-gray-500 tracking-wide">
+            Steinmüller Live Data Analytics
+          </span>
+        </div>
       </div>
+
 
       {/* User dropdown */}
       <div className="relative" ref={dropdownRef}>
