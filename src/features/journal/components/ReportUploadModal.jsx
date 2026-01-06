@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { uploadReport } from "../services/journalServices";
 
-const JournalUploadModal = ({ isOpen, onClose, reportType }) => {
+const ReportUploadModal = ({ isOpen, onClose, reportType }) => {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [downloadUrls, setDownloadUrls] = useState([]);
@@ -111,4 +111,4 @@ const JournalUploadModal = ({ isOpen, onClose, reportType }) => {
   );
 };
 
-export default JournalUploadModal;
+export default ReportUploadModal;
