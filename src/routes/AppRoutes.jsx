@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import DashboardPage from "../pages/DashboardPage";
 import SitesPage from "../pages/SitesPage";
-import DevicesPage from "../pages/DevicesPage";
+import DevicesPage from "../features/devices/DevicesPage";
 import LoginPage from "../pages/LoginPage";
 import PrivateRoute from "./PrivateRoute";
 import ReportPage from "../features/reports/ReportPage";

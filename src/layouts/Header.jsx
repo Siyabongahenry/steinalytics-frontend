@@ -33,7 +33,7 @@ export default function Header({ setSidebarOpen }) {
         <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center font-bold text-white">
           S
         </div>
-        <h1 className="text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">
+        <h1 className="text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-300">
           Steinalytics
         </h1>
       </div>
