@@ -4,7 +4,7 @@ import SitesPage from "../pages/SitesPage";
 import DevicesPage from "../pages/DevicesPage";
 import LoginPage from "../pages/LoginPage";
 import PrivateRoute from "./PrivateRoute";
-import JournalPage from "../features/journal/JournalPage";
+import ReportPage from "../features/journal/ReportPage";
 
 
 export default function AppRoutes() {
@@ -14,7 +14,7 @@ export default function AppRoutes() {
       <Route path="/dashboard" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
       <Route path="/site" element={<SitesPage />} />
       <Route path="/devices" element={<DevicesPage />} />
-      <Route path="/journal" element={<JournalPage />} />
+      <Route path="/journal" element={<ReportPage />} />
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
   );
