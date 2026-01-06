@@ -4,7 +4,7 @@ import SitesPage from "../pages/SitesPage";
 import DevicesPage from "../pages/DevicesPage";
 import LoginPage from "../pages/LoginPage";
 import PrivateRoute from "./PrivateRoute";
-import ReportPage from "../features/journal/ReportPage";
+import ReportPage from "../features/reports/ReportPage";
 
 
 export default function AppRoutes() {

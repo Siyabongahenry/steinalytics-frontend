@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
-import { uploadReport } from "../services/journalServices";
+import { uploadReport } from "../services/ReportServices";
 
 const ReportUploadModal = ({ isOpen, onClose, reportType }) => {
   const [files, setFiles] = useState([]);
