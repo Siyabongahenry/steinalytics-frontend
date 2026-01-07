@@ -14,7 +14,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
     <>
       {/* Overlay */}
       <div
-        className={`fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden transition-opacity ${
+        className={`fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden transition-opacity ${
           sidebarOpen ? "opacity-100 visible" : "opacity-0 invisible"
         }`}
         onClick={() => setSidebarOpen(false)}
@@ -22,7 +22,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
 
       {/* Sidebar */}
       <aside
-        className={`fixed z-30 inset-y-0 left-0 w-64 bg-gray-800 text-white transform lg:translate-x-0 transition-transform duration-300 ${
+        className={`fixed z-40 inset-y-0 left-0 w-64 bg-gray-800 text-white transform lg:translate-x-0 transition-transform duration-300 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         } lg:static lg:inset-auto lg:translate-x-0 flex flex-col`}
       >
