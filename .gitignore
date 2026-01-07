@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Amplify Configuration File (auto-generated)
+amplifyconfiguration.json
+
 .env.production
 .env.development
 

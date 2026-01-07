@@ -102,10 +102,18 @@ export default function DevicesPage() {
         <select
           value={sortOrder}
           onChange={(e) => setSortOrder(e.target.value)}
-          className="border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className=" bg-gray-800
+            text-gray-100
+            border border-gray-700
+            rounded-md
+            px-3 py-2
+            focus:outline-none
+            focus:ring-2
+            focus:ring-blue-500
+            focus:border-blue-500"
         >
-          <option value="desc">Sort by clockings (High → Low)</option>
-          <option value="asc">Sort by clockings (Low → High)</option>
+          <option value="desc" className="bg-gray-800 text-gray-100">Sort by clockings (High → Low)</option>
+          <option value="asc" className="bg-gray-800 text-gray-100">Sort by clockings (Low → High)</option>
         </select>
       </div>
 
