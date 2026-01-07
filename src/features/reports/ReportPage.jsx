@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import ReportCard from "./components/ReportCard";
 import ReportUploadModal from "./components/ReportUploadModal";
-import { FaUserCheck, FaClock, FaFingerprint, FaExclamationTriangle } from "react-icons/fa";
+import {  FaClock, FaFingerprint, FaExclamationTriangle } from "react-icons/fa";
 
 const reports = [
   {
     type: "vip-validation",
     title: "VIP Validation",
     description: "Identify incorrect VIP Codes",
-    icon: <FaUserCheck />,
+    icon: <FaExclamationTriangle />,
   },
   {
     type: "overbooking",
@@ -31,7 +31,7 @@ const reports = [
   {
     type: "device-clockings",
     title: "Device Clockings Count",
-    description: "Total clocking sper machine",
+    description: "Total clocking per machine",
     icon: <FaFingerprint />,
   },
 ];
