@@ -3,14 +3,14 @@
   
   <!-- Homepage -->
   <url>
-    <loc>https://www.steinalytics.com/</loc>
+    <loc>https://www.steinalytics.co.za/</loc>
     <priority>1.0</priority>
     <changefreq>daily</changefreq>
   </url>
 
   <!-- Services Pages -->
   <url>
-    <loc>https://www.steinalytics.com/reports</loc>
+    <loc>https://www.steinalytics.co.za/reports</loc>
     <priority>0.8</priority>
     <changefreq>weekly</changefreq>
   </url>

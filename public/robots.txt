@@ -6,4 +6,4 @@ Disallow: /private/
 Allow: /
 
 # Sitemap location (helps Google index faster)
-Sitemap: https://www.steinalytics.com/sitemap.xml
+Sitemap: https://www.steinalytics.co.za/sitemap.xml
