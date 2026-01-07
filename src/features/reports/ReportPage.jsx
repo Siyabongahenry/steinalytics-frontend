@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import ReportCard from "./components/ReportCard";
 import ReportUploadModal from "./components/ReportUploadModal";
-import { FaUserCheck, FaCopy, FaClock } from "react-icons/fa";
+import { FaUserCheck, FaClock, FaFingerprint, FaExclamationTriangle } from "react-icons/fa";
 
 const reports = [
   {
@@ -14,7 +14,7 @@ const reports = [
     type: "overbooking",
     title: "Overbooking Reports",
     description: "Detect overbooked employees",
-    icon: <FaClock />,
+    icon: <FaExclamationTriangle />,
   },
   {
     type: "multiple-clockings",
@@ -26,7 +26,13 @@ const reports = [
     type: "exemption",
     title: "Exemption Report",
     description: "Employees with hours greater than 72 per week",
-    icon: <FaClock />,
+    icon: <FaExclamationTriangle />,
+  },
+  {
+    type: "device-clockings",
+    title: "Device Clockings Count",
+    description: "Total clocking sper machine",
+    icon: <FaFingerprint />,
   },
 ];
 

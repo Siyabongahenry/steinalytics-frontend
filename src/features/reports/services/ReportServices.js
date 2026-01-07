@@ -7,7 +7,8 @@ const REPORT_ENDPOINTS = {
   "vip-validation": "/vip-validation",
   "overbooking": "/overbooking",
   "multiple-clockings":"/multiple-clockings",
-  "exemption":"/exemption"
+  "exemption":"/exemption",
+  "devices-clockings":"/device-clockings"
   // add more report types here
 };
 
