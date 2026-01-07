@@ -41,7 +41,12 @@ const ReportPage = () => {
 
   return (
     <div className="p-8 bg-gray-900 min-h-screen text-white">
-      <h1 className="text-2xl font-bold mb-6">Reports</h1>
+      <h1 className="text-4xl font-extrabold bg-gradient-to-r from-gray-100 to-gray-300 text-transparent bg-clip-text mb-2">
+        Reports
+      </h1>
+      <p className="text-gray-400 mb-6">
+        Upload Excel or CSV files to generate reports instantly. Download results with one click.
+      </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {reports.map((report) => (

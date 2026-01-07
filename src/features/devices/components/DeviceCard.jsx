@@ -9,26 +9,27 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-export default function DeviceCard({ name,status, serial_no, chartData }) {
+export default function DeviceCard({ name, status, serial_no, chartData }) {
   return (
-    <div className="max-w-sm rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition hover:shadow-md">
+    <div className="max-w-sm rounded-xl border border-gray-700 bg-gray-900 p-5 shadow-sm transition hover:shadow-md">
       {/* Header */}
       <div className="flex items-start justify-between">
-        <h3 className="text-lg font-semibold text-gray-900">Device</h3>
-        <span className="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700">
+        <h3 className="text-lg font-semibold text-gray-100">Device</h3>
+
+        <span className="inline-flex items-center rounded-full bg-blue-900/40 px-2.5 py-1 text-xs font-medium text-blue-400">
           {status}
         </span>
       </div>
 
       {/* Info */}
       <div className="mt-4 space-y-2">
-        <p className="text-sm text-gray-500">Name</p>
-        <p className="text-base font-medium text-gray-900">{name}</p>
+        <p className="text-sm text-gray-400">Name</p>
+        <p className="text-base font-medium text-gray-100">{name}</p>
 
-        <div className="h-px w-full bg-gray-100 my-3" />
+        <div className="my-3 h-px w-full bg-gray-700" />
 
-        <p className="text-sm text-gray-500">Serial No</p>
-        <p className="text-base font-medium text-gray-900">{serial_no}</p>
+        <p className="text-sm text-gray-400">Serial No</p>
+        <p className="text-base font-medium text-gray-100">{serial_no}</p>
       </div>
 
       {/* Graph */}
@@ -44,27 +45,39 @@ export default function DeviceCard({ name,status, serial_no, chartData }) {
               y="20"
               textAnchor="middle"
               dominantBaseline="middle"
-              className="text-sm font-semibold fill-gray-700"
+              className="fill-gray-200 text-sm font-semibold"
             >
               Clockings count
             </text>
 
-            <CartesianGrid strokeDasharray="3 3" className="stroke-gray-200" />
+            <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+
             <XAxis
               dataKey="date"
-              tick={{ fontSize: 12, fill: "#6b7280" }}
+              tick={{ fontSize: 12, fill: "#9ca3af" }}
               interval={0}
               angle={-45}
               textAnchor="end"
               height={50}
             />
-            <YAxis className="text-xs fill-gray-500" />
-            <Tooltip />
+
+            <YAxis tick={{ fontSize: 12, fill: "#9ca3af" }} />
+
+            <Tooltip
+              contentStyle={{
+                backgroundColor: "#111827",
+                border: "1px solid #374151",
+                color: "#e5e7eb",
+              }}
+              labelStyle={{ color: "#9ca3af" }}
+            />
+
             <Line
               type="monotone"
               dataKey="clockings"
-              stroke="#2563eb"
+              stroke="#3b82f6"
               strokeWidth={2}
+              dot={{ fill: "#3b82f6" }}
             />
           </LineChart>
         </ResponsiveContainer>

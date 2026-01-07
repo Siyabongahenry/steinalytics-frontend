@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import DeviceCard from "./components/DeviceCard";
+import SummaryCard from "./components/SummaryCard"
 import { getDevices } from "./services/services";
 
 export default function DevicesPage() {
@@ -7,6 +8,7 @@ export default function DevicesPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("desc");
   const [loading, setLoading] = useState(true);
+  const [statusFilter, setStatusFilter] = useState("ALL");
 
   useEffect(() => {
     async function loadDevices() {
@@ -22,10 +24,24 @@ export default function DevicesPage() {
     loadDevices();
   }, []);
 
-  const filteredDevices = devices.filter((device) =>
-    device.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  /* -------------------- Counts -------------------- */
+  const countByStatus = (status) =>
+    devices.filter((d) => d.status === status).length;
 
+  const faultyCount = countByStatus("Faulty");
+  const storageCount = countByStatus("In_Storage");
+  const inUseCount = countByStatus("In_Use");
+
+  /* -------------------- Filtering -------------------- */
+  const filteredDevices = devices
+    .filter((device) =>
+      device.name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .filter((device) =>
+      statusFilter === "ALL" ? true : device.status === statusFilter
+    );
+
+  /* -------------------- Sorting -------------------- */
   const sortedDevices = [...filteredDevices].sort((a, b) => {
     const lastA = a.chartData[a.chartData.length - 1]?.clockings || 0;
     const lastB = b.chartData[b.chartData.length - 1]?.clockings || 0;
@@ -38,8 +54,43 @@ export default function DevicesPage() {
         Device clockings count
       </h1>
 
-      {/* Search + Sort Controls */}
-      <div className="flex items-center gap-4 mb-6">
+      {/* -------------------- Summary Section -------------------- */}
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-6 mb-8">
+        <SummaryCard
+          label="All Devices"
+          count={devices.length}
+          color="bg-blue-100 text-blue-800"
+          active={statusFilter === "ALL"}
+          onClick={() => setStatusFilter("ALL")}
+        />
+
+        <SummaryCard
+          label="Faulty"
+          count={faultyCount}
+          color="bg-red-100 text-red-800"
+          active={statusFilter === "Faulty"}
+          onClick={() => setStatusFilter("Faulty")}
+        />
+
+        <SummaryCard
+          label="In Storage"
+          count={storageCount}
+          color="bg-gray-100 text-gray-800"
+          active={statusFilter === "In_Storage"}
+          onClick={() => setStatusFilter("In_Storage")}
+        />
+
+        <SummaryCard
+          label="In Use"
+          count={inUseCount}
+          color="bg-green-100 text-green-800"
+          active={statusFilter === "In_Use"}
+          onClick={() => setStatusFilter("In_Use")}
+        />
+      </div>
+
+      {/* -------------------- Search + Sort -------------------- */}
+      <div className="flex flex-wrap items-center gap-4 mb-6">
         <input
           type="text"
           placeholder="Search by device name..."
@@ -58,7 +109,7 @@ export default function DevicesPage() {
         </select>
       </div>
 
-      {/* Device Cards */}
+      {/* -------------------- Device Cards -------------------- */}
       {loading ? (
         <p>Loading devices...</p>
       ) : sortedDevices.length === 0 ? (
@@ -79,3 +130,4 @@ export default function DevicesPage() {
     </div>
   );
 }
+

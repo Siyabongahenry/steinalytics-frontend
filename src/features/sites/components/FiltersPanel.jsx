@@ -1,4 +1,3 @@
-// components/FiltersPanel.js
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -13,24 +12,15 @@ export default function FiltersPanel({
   handleDownload,
 }) {
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        backgroundColor: "#2a2a2a",
-        padding: 20,
-        borderRadius: 8,
-        marginBottom: 30,
-      }}
-    >
-      <h3 style={{ color: "#fff", marginBottom: 10 }}>Filters</h3>
+    <div className="flex flex-col bg-gray-900 p-5 rounded-lg mb-8">
+      <h3 className="text-white mb-3 text-lg font-semibold">Filters</h3>
 
       {/* Site checkboxes */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 15, marginBottom: 20 }}>
+      <div className="flex flex-wrap gap-4 mb-5">
         {sites.map((site) => (
           <label
             key={site}
-            style={{ color: "#ccc", display: "flex", alignItems: "center", gap: 5 }}
+            className="flex items-center gap-2 text-gray-300 cursor-pointer"
           >
             <input
               type="checkbox"
@@ -39,7 +29,7 @@ export default function FiltersPanel({
                 if (e.target.checked) setSelectedSites([...selectedSites, site]);
                 else setSelectedSites(selectedSites.filter((s) => s !== site));
               }}
-              style={{ width: 16, height: 16 }}
+              className="w-4 h-4 accent-blue-500"
             />
             {site}
           </label>
@@ -47,52 +37,40 @@ export default function FiltersPanel({
       </div>
 
       {/* Date pickers */}
-      <div style={{ display: "flex", gap: 20, alignItems: "center", marginBottom: 10 }}>
-        <div>
-          <label style={{ marginRight: 10, color: "#ccc" }}>Start Date:</label>
+      <div className="flex flex-wrap gap-6 items-center mb-4">
+        <div className="flex items-center gap-2">
+          <label className="text-gray-300">Start Date:</label>
           <DatePicker
             selected={startDate}
             onChange={setStartDate}
             dateFormat="yyyy-MM-dd"
             maxDate={new Date()}
+            className="px-2 py-1 rounded bg-gray-800 text-gray-100 border border-gray-700"
           />
         </div>
-        <div>
-          <label style={{ marginRight: 10, color: "#ccc" }}>End Date:</label>
+        <div className="flex items-center gap-2">
+          <label className="text-gray-300">End Date:</label>
           <DatePicker
             selected={endDate}
             onChange={setEndDate}
             dateFormat="yyyy-MM-dd"
             maxDate={new Date()}
+            className="px-2 py-1 rounded bg-gray-800 text-gray-100 border border-gray-700"
           />
         </div>
       </div>
 
       {/* Download buttons */}
-      <div style={{ display: "flex", gap: 10, marginTop: 10 }}>
+      <div className="flex gap-3 mt-3">
         <button
           onClick={() => handleDownload("csv")}
-          style={{
-            backgroundColor: "#444",
-            color: "#fff",
-            padding: "8px 16px",
-            border: "none",
-            borderRadius: 4,
-            cursor: "pointer",
-          }}
+          className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded transition"
         >
           Download CSV
         </button>
         <button
           onClick={() => handleDownload("excel")}
-          style={{
-            backgroundColor: "#444",
-            color: "#fff",
-            padding: "8px 16px",
-            border: "none",
-            borderRadius: 4,
-            cursor: "pointer",
-          }}
+          className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded transition"
         >
           Download Excel
         </button>
