@@ -1,9 +1,13 @@
 // src/pages/LoginPage.jsx
 import { useState } from "react";
-//import { Auth } from "../config/awsConfig"; // from your config folder
+import { useNavigate } from "react-router-dom";
+import useAuth from "../context/useAuth.js";
 
 export default function LoginPage() {
-  const [username, setUsername] = useState("");
+  const { login } = useAuth(); // uses AuthProvider login()
+  const navigate = useNavigate();
+
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -12,21 +16,16 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     setError("");
+
     try {
-      //const user = await Auth.signIn(username, password);
-      //console.log("Login successful:", user);
-      window.location.href = "/dashboard";
+      await login(email, password); // Amplify signIn via authService
+      navigate("/dashboard"); // redirect after successful login
     } catch (err) {
       setError(err.message || "Login failed");
     } finally {
       setLoading(false);
     }
   };
-
-  //const handleSocialLogin = (provider) => {
-    // Redirect to Cognito Hosted UI for social login
-   // Auth.federatedSignIn({ provider });
-  //};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-950">
@@ -35,21 +34,18 @@ export default function LoginPage() {
           Steinalytics
         </h1>
 
-        {error && (
-          <p className="text-red-500 text-center mb-4 font-medium">{error}</p>
-        )}
+        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
 
-        {/* Email / Password Login */}
         <form onSubmit={handleLogin} className="space-y-6">
           <div>
-            <label className="block mb-2 font-semibold">Email or Username</label>
+            <label className="block mb-2 font-semibold">Email</label>
             <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-5 py-3 rounded-xl bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
               required
+              className="w-full px-5 py-3 rounded-xl bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
             />
           </div>
 
@@ -59,9 +55,9 @@ export default function LoginPage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-5 py-3 rounded-xl bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition"
               placeholder="********"
               required
+              className="w-full px-5 py-3 rounded-xl bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
             />
           </div>
 
@@ -74,34 +70,11 @@ export default function LoginPage() {
           </button>
         </form>
 
-        {/* Divider */}
-        <div className="flex items-center my-6">
-          <hr className="flex-grow border-gray-600" />
-          <span className="mx-4 text-gray-400 text-sm">OR</span>
-          <hr className="flex-grow border-gray-600" />
-        </div>
-
-        {/* Social Login Buttons */}
-        <div className="space-y-4">
-          <button
-            //onClick={() => handleSocialLogin("Google")}
-            className="w-full py-3 bg-red-600 hover:bg-red-700 rounded-xl shadow-md flex justify-center items-center font-semibold transition"
-          >
-            Sign in with Google
-          </button>
-          <button
-            //onClick={() => handleSocialLogin("Facebook")}
-            className="w-full py-3 bg-blue-800 hover:bg-blue-900 rounded-xl shadow-md flex justify-center items-center font-semibold transition"
-          >
-            Sign in with Facebook
-          </button>
-        </div>
-
         <div className="flex justify-between mt-6 text-sm text-gray-400">
           <a href="/forgot-password" className="hover:underline">
             Forgot Password?
           </a>
-          <a href="/signup" className="hover:underline">
+          <a href="/register" className="hover:underline">
             Sign Up
           </a>
         </div>
