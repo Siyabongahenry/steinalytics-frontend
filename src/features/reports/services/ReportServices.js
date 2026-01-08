@@ -8,7 +8,8 @@ const REPORT_ENDPOINTS = {
   "overbooking": "/overbooking",
   "multiple-clockings":"/multiple-clockings",
   "exemption":"/exemption",
-  "devices-clockings":"/device-clockings"
+  "device-clockings":"/device-clockings",
+  "lookup":"lookup"
   // add more report types here
 };
 
