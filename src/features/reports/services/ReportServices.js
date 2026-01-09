@@ -2,22 +2,19 @@ import axios from "axios";
 
 const API_BASE = import.meta.env.VITE_API_URL ?? "";
 
-// Map report types to backend endpoints
 const REPORT_ENDPOINTS = {
   "vip-validation": "/vip-validation",
   "overbooking": "/overbooking",
-  "multiple-clockings":"/multiple-clockings",
-  "exemption":"/exemption",
-  "device-clockings":"/device-clockings",
-  "lookup":"lookup"
-  // add more report types here
+  "multiple-clockings": "/multiple-clockings",
+  "exemption": "/exemption",
+  "device-clockings": "/device-clockings",
+  "lookup": "/lookup", // fixed missing slash
 };
 
-export const uploadReport = async (reportType, file) => {
+// Upload with progress
+export const uploadReportWithProgress = async (reportType, file, onProgress = () => {}) => {
   const endpoint = REPORT_ENDPOINTS[reportType];
-  if (!endpoint) {
-    throw { detail: `Unknown report type: ${reportType}` };
-  }
+  if (!endpoint) throw { detail: `Unknown report type: ${reportType}` };
 
   const formData = new FormData();
   formData.append("file", file);
@@ -25,8 +22,13 @@ export const uploadReport = async (reportType, file) => {
   try {
     const response = await axios.post(`${API_BASE}${endpoint}`, formData, {
       headers: { "Content-Type": "multipart/form-data" },
+      onUploadProgress: (progressEvent) => {
+        const total = progressEvent.total || 1;
+        const percent = Math.round((progressEvent.loaded * 100) / total);
+        onProgress(percent);
+      },
     });
-    return response.data; // e.g., { incorrect_rows, download_url }
+    return response.data; // expected: { download_url, chart_data? }
   } catch (error) {
     throw error.response?.data || { detail: "Upload failed" };
   }

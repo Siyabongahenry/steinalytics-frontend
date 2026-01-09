@@ -6,7 +6,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
     { to: "/dashboard", name: "Dashboard", icon: HomeIcon },
     { to: "/site", name: "Site Statistics", icon: UsersIcon },
     { to: "/devices", name: "Clocking Machines", icon: ClockIcon },
-     { to: "/journal", name: "Reports", icon:  DocumentIcon }
+     { to: "/reports", name: "Reports", icon:  DocumentIcon }
 
   ];
 
