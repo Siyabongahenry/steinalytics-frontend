@@ -1,7 +1,8 @@
 export const oidcConfig = {
-  authority: "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_iaSTT2zHu",
-  client_id: "2r8anbqd4obstammse27vel10",
-  redirect_uri: "https://d84l1y8p4kdic.cloudfront.net",
+  authority: import.meta.env.VITE_COGNITO_AUTHORITY,
+  client_id: import.meta.env.VITE_COGNITO_CLIENT_ID,
+  redirect_uri: import.meta.env.VITE_COGNITO_REDIRECT_URI,
+  post_logout_redirect_uri: import.meta.env.VITE_COGNITO_POST_LOGOUT_URI,
   response_type: "code",
   scope: "email openid phone"
 };

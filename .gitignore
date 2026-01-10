@@ -30,3 +30,4 @@ amplifyconfiguration.json
 *.sw?
 
 .env
+.env.* 
