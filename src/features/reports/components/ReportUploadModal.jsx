@@ -3,6 +3,7 @@ import React, { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { uploadReport } from "../services/ReportServices";
 import ReusableChart from "./ReusableChart";
+import { FaCheckCircle, FaExclamationCircle } from "react-icons/fa"; // React Icons
 
 const ReportUploadModal = ({ isOpen, onClose, reportType }) => {
   const [files, setFiles] = useState([]);
@@ -29,40 +30,96 @@ const ReportUploadModal = ({ isOpen, onClose, reportType }) => {
     multiple: true,
   });
 
+  // Sequential processing animation after upload
+  const animateProcessing = (fileName) => {
+    let proc = 0;
+    const interval = setInterval(() => {
+      proc = Math.min(proc + 3, 95); // slowly approach 95% until backend completes
+      setProgress(prev => ({
+        ...prev,
+        [fileName]: { ...prev[fileName], processing: proc }
+      }));
+    }, 100);
+    return interval;
+  };
+
   const handleUpload = async () => {
-    if (files.length === 0) return;
+    if (!files.length) return;
     setLoading(true);
     setError("");
     setDownloadUrls([]);
     setChartData([]);
     setProgress({});
 
-    try {
-      const urls = [];
-      const charts = [];
+    const urls = [];
+    const charts = [];
 
-      for (let file of files) {
+    for (const file of files) {
+      // Initialize progress
+      setProgress(prev => ({
+        ...prev,
+        [file.name]: { upload: 0, processing: 0, status: "uploading", errorMsg: "" }
+      }));
+
+      const interval = animateProcessing(file.name);
+
+      try {
+        // Upload stage
         const res = await uploadReport(reportType, file, (event) => {
-          setProgress((prev) => ({
+          if (!event.total) return;
+          const percent = Math.round((event.loaded / event.total) * 100);
+          setProgress(prev => ({
             ...prev,
-            [file.name]: Math.round((event.loaded / event.total) * 100),
+            [file.name]: { ...prev[file.name], upload: percent }
           }));
         });
 
+        // Upload done → start processing
+        clearInterval(interval); // stop any previous fake animation
+        setProgress(prev => ({
+          ...prev,
+          [file.name]: { ...prev[file.name], upload: 100, processing: 0, status: "processing" }
+        }));
+
+        // Simulate processing animation until backend finishes
+        const procInterval = setInterval(() => {
+          setProgress(prev => {
+            const current = prev[file.name];
+            const nextProc = Math.min(current.processing + 3, 95);
+            return { ...prev, [file.name]: { ...current, processing: nextProc } };
+          });
+        }, 100);
+
+        // Backend response assumed processing complete now
+        clearInterval(procInterval);
+        setProgress(prev => ({
+          ...prev,
+          [file.name]: { upload: 100, processing: 100, status: "done", errorMsg: "" }
+        }));
+
         urls.push({ name: file.name, url: res.download_url });
+        if (res.chart_data) charts.push({ title: file.name, ...res.chart_data });
+      } catch (err) {
+        clearInterval(interval);
+        console.error(err);
 
-        if (res.chart_data) {
-          charts.push({ title: file.name, ...res.chart_data });
-        }
+        setProgress(prev => ({
+          ...prev,
+          [file.name]: {
+            ...prev[file.name],
+            processing: prev[file.name].upload === 100 ? 100 : prev[file.name].processing,
+            status: "error",
+            errorMsg: err.message || "Upload failed"
+          }
+        }));
+
+        setError(err.message || "Upload failed");
       }
-
-      setDownloadUrls(urls);
-      setChartData(charts);
-    } catch (err) {
-      setError(err.message || "Upload failed");
-    } finally {
-      setLoading(false);
     }
+
+    setDownloadUrls(urls);
+    setChartData(charts);
+    setLoading(false);
   };
 
   if (!isOpen) return null;
@@ -79,6 +136,7 @@ const ReportUploadModal = ({ isOpen, onClose, reportType }) => {
 
         <h2 className="font-bold text-3xl mb-6 capitalize">{reportType}</h2>
 
+        {/* Dropzone */}
         <div
           {...getRootProps()}
           className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer mb-4 transition ${
@@ -93,19 +151,58 @@ const ReportUploadModal = ({ isOpen, onClose, reportType }) => {
           )}
         </div>
 
+        {/* File progress */}
         {files.length > 0 && (
-          <ul className="mb-4 max-h-32 overflow-y-auto">
-            {files.map((file) => (
-              <li key={file.name} className="text-gray-300 mb-1">
-                {file.name}{" "}
-                {progress[file.name] ? (
-                  <span className="text-green-400">({progress[file.name]}%)</span>
-                ) : null}
-              </li>
-            ))}
+          <ul className="mb-4">
+            {files.map((file) => {
+              const prog = progress[file.name] || { upload: 0, processing: 0, status: "idle", errorMsg: "" };
+              const isError = prog.status === "error";
+              const isDone = prog.status === "done";
+
+              return (
+                <li key={file.name} className="mb-4">
+                  <div className="flex items-center justify-between mb-1">
+                    <p className="text-gray-200">{file.name}</p>
+                    {isDone && <FaCheckCircle className="text-green-400" />}
+                    {isError && <FaExclamationCircle className="text-red-500" />}
+                  </div>
+
+                  {/* Upload bar */}
+                  <div className={`w-full rounded-full h-5 mb-2 overflow-hidden relative border ${isError && prog.upload < 100 ? "border-red-500" : "border-gray-700"}`}>
+                    <div
+                      className={`h-5 transition-all duration-300 ${isError && prog.upload < 100 ? "bg-red-500" : "bg-blue-500"}`}
+                      style={{ width: `${prog.upload}%` }}
+                    />
+                    <span className="absolute right-2 top-0 text-xs text-white">
+                      Upload {prog.upload}%
+                    </span>
+                    {isError && prog.upload < 100 && (
+                      <span className="absolute left-2 top-0 text-xs text-white">{prog.errorMsg}</span>
+                    )}
+                  </div>
+
+                  {/* Processing bar */}
+                  {prog.upload === 100 && (
+                    <div className={`w-full rounded-full h-5 mb-2 overflow-hidden relative border ${isError && prog.upload === 100 ? "border-red-500" : "border-gray-700"}`}>
+                      <div
+                        className={`h-5 transition-all duration-300 ${isError && prog.upload === 100 ? "bg-red-500" : "bg-purple-500"}`}
+                        style={{ width: `${prog.processing}%` }}
+                      />
+                      <span className="absolute right-2 top-0 text-xs text-white">
+                        Processing {prog.processing}%
+                      </span>
+                      {isError && prog.upload === 100 && (
+                        <span className="absolute left-2 top-0 text-xs text-white">{prog.errorMsg}</span>
+                      )}
+                    </div>
+                  )}
+                </li>
+              );
+            })}
           </ul>
         )}
 
+        {/* Upload button */}
         <button
           className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg w-full mb-4 transition disabled:opacity-50"
           onClick={handleUpload}
@@ -114,8 +211,10 @@ const ReportUploadModal = ({ isOpen, onClose, reportType }) => {
           {loading ? "Uploading..." : "Upload & Generate Reports"}
         </button>
 
+        {/* Error summary */}
         {error && <p className="text-red-500 mb-4">{error}</p>}
 
+        {/* Download links */}
         {downloadUrls.length > 0 && (
           <div className="mb-6">
             <h3 className="font-bold text-xl mb-2">Download Reports</h3>
@@ -136,6 +235,7 @@ const ReportUploadModal = ({ isOpen, onClose, reportType }) => {
           </div>
         )}
 
+        {/* Charts */}
         {chartData.length > 0 && (
           <div className="space-y-6">
             {chartData.map((chart, idx) => (
