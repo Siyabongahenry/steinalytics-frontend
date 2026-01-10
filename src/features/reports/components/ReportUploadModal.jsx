@@ -59,7 +59,7 @@ const ReportUploadModal = ({ isOpen, onClose, reportType }) => {
       setDownloadUrls(urls);
       setChartData(charts);
     } catch (err) {
-      setError(err.detail || "Upload failed");
+      setError(err.message || "Upload failed");
     } finally {
       setLoading(false);
     }
