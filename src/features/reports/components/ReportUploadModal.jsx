@@ -3,9 +3,9 @@ import React, { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { uploadReport } from "../services/ReportServices";
 import ReusableChart from "./ReusableChart";
-import { FaCheckCircle, FaExclamationCircle } from "react-icons/fa"; // React Icons
+import { FaCheckCircle, FaExclamationCircle,FaInfoCircle } from "react-icons/fa"; // React Icons
 
-const ReportUploadModal = ({ isOpen, onClose, reportType }) => {
+const ReportUploadModal = ({ isOpen, onClose, reportType,reportTitle,reportDescription }) => {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [downloadUrls, setDownloadUrls] = useState([]);
@@ -134,7 +134,21 @@ const ReportUploadModal = ({ isOpen, onClose, reportType }) => {
           ✕
         </button>
 
-        <h2 className="font-bold text-3xl mb-6 capitalize">{reportType}</h2>
+        
+       <div className="mb-6">
+          <h2 className="text-3xl sm:text-4xl font-extrabold mb-2 bg-gradient-to-r from-blue-400 to-purple-500 text-transparent bg-clip-text">
+            {reportTitle}
+          </h2>
+
+          {reportDescription && (
+            <div className="flex items-center text-gray-300 text-base sm:text-lg gap-2">
+              <FaInfoCircle className="text-blue-400 mt-1" />
+              <span>{reportDescription}</span>
+            </div>
+          )}
+        </div>
+
+
 
         {/* Dropzone */}
         <div

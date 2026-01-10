@@ -30,14 +30,16 @@ const ReportPage = () => {
             title={report.title}
             description={report.description}
             icon={report.icon}
-            onClick={() => setSelectedReport(report.type)}
+            onClick={() => setSelectedReport(report)}
           />
         ))}
       </div>
 
       <ReportUploadModal
         isOpen={!!selectedReport}
-        reportType={selectedReport}
+        reportType={selectedReport?.type}
+        reportTitle = {selectedReport?.title}
+        reportDescription ={selectedReport?.description}
         onClose={() => setSelectedReport(null)}
       />
     </div>
