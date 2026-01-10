@@ -40,7 +40,7 @@ export default function Header({ setSidebarOpen }) {
           </h1>
 
           <span className="text-xs text-gray-500 tracking-wide">
-            Steinmüller Live Data Analytics
+            Live Data Analytics
           </span>
         </div>
       </div>
