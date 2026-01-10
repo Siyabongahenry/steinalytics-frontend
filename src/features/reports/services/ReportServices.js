@@ -13,18 +13,23 @@ const REPORT_ENDPOINTS = {
 };
 
 const extractFastApiError = (error) => {
-  const detail = error?.response?.data?.detail;
+  if (!error.response) {
+    return "Network error. Please try again.";
+  }
+
+  const detail = error.response.data?.detail;
 
   if (Array.isArray(detail)) {
-    return detail.map(d => d.msg).join(", ");
+    return detail.map(e => e.msg).join(", ");
   }
 
   if (typeof detail === "string") {
     return detail;
   }
 
-  return "Upload failed";
+  return `Request failed (${error.response.status})`;
 };
+
 
 export const uploadReport = async (reportType, file, onUploadProgress) => {
   const endpoint = REPORT_ENDPOINTS[reportType];
@@ -47,6 +52,7 @@ export const uploadReport = async (reportType, file, onUploadProgress) => {
     );
 
     return response.data;
+
   } catch (error) {
     throw new Error(extractFastApiError(error));
   }
