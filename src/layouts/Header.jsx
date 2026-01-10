@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { Bars3Icon, ChevronDownIcon } from "@heroicons/react/24/outline";
-import useAuth from "../context/useAuth";
+import { useAuth } from "react-oidc-context";
 
 export default function Header({ setSidebarOpen }) {
-  const { user, logout } = useAuth();
+  const auth = useAuth();
   const [profileOpen, setProfileOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -16,6 +16,11 @@ export default function Header({ setSidebarOpen }) {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  const displayName =
+    auth.user?.profile?.email ||
+    auth.user?.profile?.["cognito:username"] ||
+    "Guest";
 
   return (
     <header className="sticky top-0 z-20 flex items-center justify-between bg-gray-900 shadow-md p-4">
@@ -38,13 +43,11 @@ export default function Header({ setSidebarOpen }) {
           <h1 className="text-xl font-extrabold text-blue-400">
             Steinalytics
           </h1>
-
           <span className="text-xs text-gray-500 tracking-wide">
             Live Data Analytics
           </span>
         </div>
       </div>
-
 
       {/* User dropdown */}
       <div className="relative" ref={dropdownRef}>
@@ -52,34 +55,26 @@ export default function Header({ setSidebarOpen }) {
           className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-800 transition"
           onClick={() => setProfileOpen(!profileOpen)}
         >
-          <span>{user?.username || "Guest"}</span>
+          <span>{displayName}</span>
           <ChevronDownIcon className="w-4 h-4" />
         </button>
 
         {profileOpen && (
           <div className="absolute right-0 mt-2 w-40 bg-gray-800 rounded-md shadow-lg overflow-hidden">
-            {user ? (
+            {auth.isAuthenticated ? (
               <button
-                onClick={logout}
+                onClick={() => auth.signoutRedirect()}
                 className="w-full text-left px-4 py-2 hover:bg-red-600 transition text-white"
               >
                 Logout
               </button>
             ) : (
-              <>
-                <a
-                  href="/login"
-                  className="block px-4 py-2 hover:bg-gray-700 transition text-white"
-                >
-                  Login
-                </a>
-                <a
-                  href="/signup"
-                  className="block px-4 py-2 hover:bg-gray-700 transition text-white"
-                >
-                  Sign Up
-                </a>
-              </>
+              <button
+                onClick={() => auth.signinRedirect()}
+                className="w-full text-left px-4 py-2 hover:bg-blue-600 transition text-white"
+              >
+                Login / Register
+              </button>
             )}
           </div>
         )}

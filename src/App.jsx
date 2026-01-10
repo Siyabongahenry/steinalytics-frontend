@@ -1,12 +1,13 @@
 import "./index.css";
 import { BrowserRouter } from "react-router-dom";
-import AuthProvider from "./context/AuthProvider";
 import MainLayout from "./layouts/MainLayout";
 import AppRoutes from "./routes/AppRoutes";
+import { AuthProvider } from "react-oidc-context";
+import { oidcConfig } from "./config/authConfig";
 
 function App() {
   return (
-    <AuthProvider>
+    <AuthProvider {...oidcConfig}>
       <BrowserRouter>
         <MainLayout>
           <AppRoutes />
