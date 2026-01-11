@@ -3,7 +3,7 @@ import { XMarkIcon, HomeIcon, UsersIcon, DocumentIcon,ClockIcon } from "@heroico
 
 export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
   const links = [
-    { to: "/dashboard", name: "Dashboard", icon: HomeIcon },
+    { to: "/home", name: "Home", icon: HomeIcon },
     { to: "/site", name: "Site Statistics", icon: UsersIcon },
     { to: "/devices", name: "Clocking Machines", icon: ClockIcon },
      { to: "/reports", name: "Reports", icon:  DocumentIcon }
