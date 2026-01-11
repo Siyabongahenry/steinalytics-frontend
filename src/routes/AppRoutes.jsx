@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import DashboardPage from "../pages/DashboardPage";
+import HomePage from "../pages/HomePage";
 import SitesPage from "../pages/SitesPage";
 import DevicesPage from "../features/devices/DevicesPage";
 import ReportPage from "../features/reports/ReportPage";
@@ -12,11 +12,11 @@ export default function AppRoutes() {
     <Routes>
       <Route path="/login" element={<AuthPage />} />
       <Route path="/register" element={<AuthPage />} />
-      <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+      <Route path="/home" element={<HomePage/>} />
       <Route path="/site" element={<SitesPage />} />
       <Route path="/devices" element={<DevicesPage />} />
       <Route path="/reports" element={<ReportPage />} />
-      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      <Route path="*" element={<Navigate to="/home" replace />} />
     </Routes>
   );
 }
