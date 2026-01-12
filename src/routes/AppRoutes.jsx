@@ -4,6 +4,7 @@ import SitesPage from "../pages/SitesPage";
 import DevicesPage from "../features/devices/DevicesPage";
 import ReportPage from "../features/reports/ReportPage";
 import AuthPage from "../pages/AuthPage";
+import AboutPage from "../pages/AboutPage";
 import { ProtectedRoute } from "./ProtectedRoute";
 
 
@@ -16,6 +17,7 @@ export default function AppRoutes() {
       <Route path="/site" element={<SitesPage />} />
       <Route path="/devices" element={<DevicesPage />} />
       <Route path="/reports" element={<ReportPage />} />
+      <Route path="/about" element={<AboutPage />} />
       <Route path="*" element={<Navigate to="/home" replace />} />
     </Routes>
   );
