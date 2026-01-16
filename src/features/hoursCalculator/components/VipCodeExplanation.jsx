@@ -1,4 +1,4 @@
-import { getDayType } from "../utils/dayType";
+import { getDayType } from "../utils/dayTypes";
 
 export default function VipCodeExplanation({ booking, date, isHoliday, shiftType }) {
   const dayType = getDayType(date, isHoliday);

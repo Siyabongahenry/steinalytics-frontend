@@ -1,4 +1,4 @@
-import { getDayType } from "../utils/dayType";
+import { getDayType } from "../utils/dayTypes";
 import { VIP_CODES } from "../config/vipCodes";
 import { NORMAL_LIMITS } from "../config/workingRules";
 
