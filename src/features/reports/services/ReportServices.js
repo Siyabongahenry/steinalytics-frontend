@@ -9,7 +9,7 @@ const REPORT_ENDPOINTS = {
   "multiple-clockings": "/multiple-clockings",
   "exemption": "/exemption",
   "device-clockings": "/device-clockings",
-  "lookup": "/lookup",
+  "employees-attendance": "/attendance/employee-attendance-summary",
 };
 
 const extractFastApiError = (error) => {
