@@ -15,14 +15,6 @@ const HomePage = () => {
         <p className="text-lg text-gray-300 max-w-3xl mx-auto mb-8">
           Upload Excel files, generate automated reports, and visualize live HR data trends instantly.
         </p>
-        <div className="flex justify-center space-x-4">
-          <Link to="/site" className="bg-blue-500 px-6 py-3 rounded-lg font-semibold hover:bg-blue-600">
-            Upload Data
-          </Link>
-          <Link to="/reports" className="bg-green-500 px-6 py-3 rounded-lg font-semibold hover:bg-green-600">
-            Explore Reports
-          </Link>
-        </div>
       </section>
 
       {/* Features */}
