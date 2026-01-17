@@ -10,6 +10,7 @@ const REPORT_ENDPOINTS = {
   "exemption": "/exemption",
   "device-clockings": "/device-clockings",
   "employees-attendance": "/attendance/employee-attendance-summary",
+  "employees-on-site":"/attendance/site-summary"
 };
 
 const extractFastApiError = (error) => {
