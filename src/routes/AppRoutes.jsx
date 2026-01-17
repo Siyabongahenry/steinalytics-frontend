@@ -26,20 +26,16 @@ export default function AppRoutes() {
         <Route path="/register" element={<AuthPage />} />
         <Route path="/about" element={<AboutPage />} />
 
-        {/* Protected routes */}
-        <Route element={<ProtectedRoute />}>
-          <Route path="/home" element={<HomePage />} />
-          <Route path="/site" element={<SitesPage />} />
-          <Route path="/devices" element={<DevicesPage />} />
-          <Route path="/reports" element={<ReportPage />} />
-          <Route
-            path="/hours-calculator"
-            element={<HoursCalculatorPage />}
-          />
-        </Route>
-
-        {/* Fallback */}
-        <Route path="*" element={<Navigate to="/home" replace />} />
+       
+        <Route path="/home" element={<HomePage />} />
+        <Route path="/site" element={<SitesPage />} />
+        <Route path="/devices" element={<DevicesPage />} />
+        <Route path="/reports" element={<ReportPage />} />
+        <Route
+          path="/hours-calculator"
+          element={<HoursCalculatorPage />}
+        />
+    
       </Routes>
     </Suspense>
   );
