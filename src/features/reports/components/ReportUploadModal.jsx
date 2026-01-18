@@ -239,7 +239,7 @@ const ReportUploadModal = ({ isOpen, onClose, reportType,reportTitle,reportDescr
                     href={item.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-green-400 underline hover:text-green-300"
+                    className="text-green-400 underline hover:text-green-300 cursor-pointer"
                   >
                     {item.name}
                   </a>

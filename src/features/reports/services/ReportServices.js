@@ -43,6 +43,9 @@ export const uploadReport = async (reportType, file, onUploadProgress) => {
   formData.append("file", file); // must match FastAPI param
 
   try {
+
+    console.log("Sending file to backend")
+
     const response = await axios.post(
       `${API_BASE}${endpoint}`,
       formData,
@@ -51,6 +54,8 @@ export const uploadReport = async (reportType, file, onUploadProgress) => {
         onUploadProgress,
       }
     );
+
+    console.log(`File sent to - ${API_BASE}${endpoint}`)
 
     return response.data;
 
