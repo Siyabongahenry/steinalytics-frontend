@@ -45,7 +45,7 @@ export const uploadReport = async (reportType, file, onUploadProgress) => {
   try {
 
     console.log("Sending file to backend")
-
+    console.log(`File sent to - ${API_BASE}${endpoint}`)
     const response = await axios.post(
       `${API_BASE}${endpoint}`,
       formData,

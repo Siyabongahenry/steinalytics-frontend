@@ -27,6 +27,12 @@ jobs:
 
       - name: Build project
         run: npm run build
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+          VITE_COGNITO_AUTHORITY: ${{ secrets.VITE_COGNITO_AUTHORITY }}
+          VITE_COGNITO_CLIENT_ID: ${{ secrets.VITE_COGNITO_CLIENT_ID }}
+          VITE_COGNITO_POST_LOGOUT_URI: ${{ secrets.VITE_COGNITO_POST_LOGOUT_URI }}
+          VITE_COGNITO_REDIRECT_URI: ${{ secrets.VITE_COGNITO_REDIRECT_URI }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
