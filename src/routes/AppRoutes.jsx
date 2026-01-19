@@ -1,6 +1,7 @@
 // src/AppRoutes.jsx
 import { Routes, Route, Navigate } from "react-router-dom";
 import { lazy, Suspense } from "react";
+import ProtectedRoute from "./ProtectedRoute"
 
 /* Lazy-loaded pages */
 const HomePage = lazy(() => import("../pages/HomePage"));
@@ -41,6 +42,11 @@ export default function AppRoutes() {
         <Route path="/devices" element={<DevicesPage />} />
         <Route path="/reports" element={<ReportPage />} />
         <Route path="/hours-calculator" element={<HoursCalculatorPage />} />
+
+        {/* Protected routes*/}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/reports" element={<ReportPage />} />
+        </Route>
 
         {/* Redirect root "/" to "/home" */}
         <Route path="/" element={<Navigate to="/home" replace />} />
