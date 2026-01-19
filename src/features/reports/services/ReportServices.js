@@ -9,7 +9,8 @@ const REPORT_ENDPOINTS = {
   "multiple-clockings": "/multiple-clockings",
   "exemption": "/exemption",
   "device-clockings": "/device-clockings",
-  "lookup": "/lookup",
+  "employees-attendance": "/attendance/employee-attendance-summary",
+  "employees-on-site":"/attendance/site-summary"
 };
 
 const extractFastApiError = (error) => {
@@ -42,6 +43,9 @@ export const uploadReport = async (reportType, file, onUploadProgress) => {
   formData.append("file", file); // must match FastAPI param
 
   try {
+
+    console.log("Sending file to backend")
+    console.log(`File sent to - ${API_BASE}${endpoint}`)
     const response = await axios.post(
       `${API_BASE}${endpoint}`,
       formData,
@@ -50,6 +54,8 @@ export const uploadReport = async (reportType, file, onUploadProgress) => {
         onUploadProgress,
       }
     );
+
+    console.log(`File sent to - ${API_BASE}${endpoint}`)
 
     return response.data;
 

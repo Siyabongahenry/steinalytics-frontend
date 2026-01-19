@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import ReportCard from "./components/ReportCard";
 import ReportUploadModal from "./components/ReportUploadModal";
-import { FaClock, FaFingerprint, FaExclamationTriangle } from "react-icons/fa";
+import { FaClock, FaFingerprint, FaExclamationTriangle, FaUserCheck,FaUsers } from "react-icons/fa";
 
 const reports = [
   { type: "vip-validation", title: "VIP Validation", description: "Identify incorrect VIP Codes", icon: <FaExclamationTriangle /> },
@@ -9,6 +9,8 @@ const reports = [
   { type: "multiple-clockings", title: "Multiple Clocking Reports", description: "Detect multiple clockings", icon: <FaClock /> },
   { type: "exemption", title: "Exemption Report", description: "Employees with hours greater than 72 per week", icon: <FaExclamationTriangle /> },
   { type: "device-clockings", title: "Device Clockings Count", description: "Total clocking per machine", icon: <FaFingerprint /> },
+  { type: "employees-attendance", title: "Employees Attendance", description: "Count total attendance per employee", icon: <FaUserCheck/> },
+  { type: "employees-on-site", title: "Summary of Employees per Site", description: "Count total employees per site", icon: <FaUsers/> },
 ];
 
 const ReportPage = () => {

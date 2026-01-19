@@ -1,4 +1,4 @@
-import { getDayType } from "../utils/dayType";
+import { getDayType } from "../utils/dayTypes";
 import { NORMAL_LIMITS } from "../config/workingRules";
 
 export default function DaySummary({ date, isHoliday, shiftType }) {

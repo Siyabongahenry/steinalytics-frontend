@@ -3,9 +3,9 @@ import React, { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { uploadReport } from "../services/ReportServices";
 import ReusableChart from "./ReusableChart";
-import { FaCheckCircle, FaExclamationCircle,FaInfoCircle } from "react-icons/fa"; // React Icons
+import { FaCheckCircle, FaExclamationCircle, FaInfoCircle, FaDownload } from "react-icons/fa";
 
-const ReportUploadModal = ({ isOpen, onClose, reportType,reportTitle,reportDescription }) => {
+const ReportUploadModal = ({ isOpen, onClose, reportType, reportTitle, reportDescription }) => {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [downloadUrls, setDownloadUrls] = useState([]);
@@ -30,11 +30,10 @@ const ReportUploadModal = ({ isOpen, onClose, reportType,reportTitle,reportDescr
     multiple: true,
   });
 
-  // Sequential processing animation after upload
   const animateProcessing = (fileName) => {
     let proc = 0;
     const interval = setInterval(() => {
-      proc = Math.min(proc + 3, 95); // slowly approach 95% until backend completes
+      proc = Math.min(proc + 3, 95);
       setProgress(prev => ({
         ...prev,
         [fileName]: { ...prev[fileName], processing: proc }
@@ -55,7 +54,6 @@ const ReportUploadModal = ({ isOpen, onClose, reportType,reportTitle,reportDescr
     const charts = [];
 
     for (const file of files) {
-      // Initialize progress
       setProgress(prev => ({
         ...prev,
         [file.name]: { upload: 0, processing: 0, status: "uploading", errorMsg: "" }
@@ -64,7 +62,6 @@ const ReportUploadModal = ({ isOpen, onClose, reportType,reportTitle,reportDescr
       const interval = animateProcessing(file.name);
 
       try {
-        // Upload stage
         const res = await uploadReport(reportType, file, (event) => {
           if (!event.total) return;
           const percent = Math.round((event.loaded / event.total) * 100);
@@ -74,14 +71,12 @@ const ReportUploadModal = ({ isOpen, onClose, reportType,reportTitle,reportDescr
           }));
         });
 
-        // Upload done → start processing
-        clearInterval(interval); // stop any previous fake animation
+        clearInterval(interval);
         setProgress(prev => ({
           ...prev,
           [file.name]: { ...prev[file.name], upload: 100, processing: 0, status: "processing" }
         }));
 
-        // Simulate processing animation until backend finishes
         const procInterval = setInterval(() => {
           setProgress(prev => {
             const current = prev[file.name];
@@ -90,7 +85,6 @@ const ReportUploadModal = ({ isOpen, onClose, reportType,reportTitle,reportDescr
           });
         }, 100);
 
-        // Backend response assumed processing complete now
         clearInterval(procInterval);
         setProgress(prev => ({
           ...prev,
@@ -134,12 +128,11 @@ const ReportUploadModal = ({ isOpen, onClose, reportType,reportTitle,reportDescr
           ✕
         </button>
 
-        
-       <div className="mb-6">
+        {/* Title & Description */}
+        <div className="mb-6">
           <h2 className="text-3xl sm:text-4xl font-extrabold mb-2 bg-gradient-to-r from-blue-400 to-purple-500 text-transparent bg-clip-text">
             {reportTitle}
           </h2>
-
           {reportDescription && (
             <div className="flex items-center text-gray-300 text-base sm:text-lg gap-2">
               <FaInfoCircle className="text-blue-400 mt-1" />
@@ -147,8 +140,6 @@ const ReportUploadModal = ({ isOpen, onClose, reportType,reportTitle,reportDescr
             </div>
           )}
         </div>
-
-
 
         {/* Dropzone */}
         <div
@@ -167,16 +158,16 @@ const ReportUploadModal = ({ isOpen, onClose, reportType,reportTitle,reportDescr
 
         {/* File progress */}
         {files.length > 0 && (
-          <ul className="mb-4">
+          <ul className="mb-4 space-y-4">
             {files.map((file) => {
               const prog = progress[file.name] || { upload: 0, processing: 0, status: "idle", errorMsg: "" };
               const isError = prog.status === "error";
               const isDone = prog.status === "done";
 
               return (
-                <li key={file.name} className="mb-4">
+                <li key={file.name}>
                   <div className="flex items-center justify-between mb-1">
-                    <p className="text-gray-200">{file.name}</p>
+                    <p className="text-gray-200 truncate">{file.name}</p>
                     {isDone && <FaCheckCircle className="text-green-400" />}
                     {isError && <FaExclamationCircle className="text-red-500" />}
                   </div>
@@ -228,24 +219,24 @@ const ReportUploadModal = ({ isOpen, onClose, reportType,reportTitle,reportDescr
         {/* Error summary */}
         {error && <p className="text-red-500 mb-4">{error}</p>}
 
-        {/* Download links */}
+        {/* Download buttons */}
         {downloadUrls.length > 0 && (
           <div className="mb-6">
-            <h3 className="font-bold text-xl mb-2">Download Reports</h3>
-            <ul className="space-y-1">
+            <h3 className="font-bold text-xl mb-4">Download Reports</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {downloadUrls.map((item) => (
-                <li key={item.url}>
-                  <a
-                    href={item.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-green-400 underline hover:text-green-300"
-                  >
-                    {item.name}
-                  </a>
-                </li>
+                <a
+                  key={item.url}
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between bg-green-700 hover:bg-green-600 text-white font-medium px-4 py-3 rounded-lg shadow-md transition"
+                >
+                  <span className="truncate">{item.name}</span>
+                  <FaDownload className="ml-2" />
+                </a>
               ))}
-            </ul>
+            </div>
           </div>
         )}
 
