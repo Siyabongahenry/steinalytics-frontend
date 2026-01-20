@@ -2,7 +2,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import ProtectedRoute from "./ProtectedRoute.jsx";
-import Callback from "../pages/CallbackPage";
+import Spinner from "../components/Spinner.jsx"
 
 /* Lazy-loaded pages */
 const HomePage = lazy(() => import("../pages/HomePage"));
@@ -18,8 +18,8 @@ export default function AppRoutes() {
     <Suspense
       fallback={
         <div className="h-screen w-screen flex flex-col items-center justify-center bg-gray-900 text-white">
-          {/* Gradient Spinner */}
-          <div className="w-16 h-16 border-4 border-t-transparent border-b-transparent border-l-blue-500 border-r-purple-500 rounded-full animate-spin mb-4"></div>
+         
+          <Spinner/>
 
           {/* Pulsing Loading Text */}
           <p className="text-xl font-semibold animate-pulse">Loading...</p>
@@ -33,7 +33,6 @@ export default function AppRoutes() {
     >
       <Routes>
 
-        <Route path="/callback" element={<Callback />} />
         {/* Public routes */}
         <Route path="/login" element={<AuthPage />} />
         <Route path="/register" element={<AuthPage />} />

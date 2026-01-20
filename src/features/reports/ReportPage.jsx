@@ -3,6 +3,7 @@ import ReportCard from "./components/ReportCard";
 import ReportUploadModal from "./components/ReportUploadModal";
 import { FaClock, FaFingerprint, FaExclamationTriangle, FaUserCheck,FaUsers } from "react-icons/fa";
 
+import Spinner from "../../components/Spinner"
 const reports = [
   { type: "vip-validation", title: "VIP Validation", description: "Identify incorrect VIP Codes", icon: <FaExclamationTriangle /> },
   { type: "overbooking", title: "Overbooking Reports", description: "Detect overbooked employees", icon: <FaExclamationTriangle /> },
@@ -24,6 +25,7 @@ const ReportPage = () => {
 
       <p className="text-gray-400 mb-6">
         Upload Excel or CSV files to generate reports instantly. Download results with one click.
+     
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">

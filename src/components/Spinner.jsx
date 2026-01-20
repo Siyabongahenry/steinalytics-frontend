@@ -1,37 +1,63 @@
 // src/components/Spinner.jsx
-export default function Spinner({ showLogo = true }) {
+export default function Spinner({ showLogo = true, logoText = "S", size = 100 }) {
   return (
-    <div className="relative w-20 h-20 flex items-center justify-center">
-      {/* Neon halo */}
-      <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-600 to-purple-500 blur-xl opacity-70 animate-pulse"></div>
+    <div
+      className="flex items-center justify-center relative"
+      style={{ width: size, height: size }}
+    >
+      {/* Outer half ring rotating clockwise */}
+      <svg
+        className="absolute inset-0 animate-spin-clockwise"
+        viewBox="0 0 60 60"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M10 30a20 20 0 0 1 40 0"  // top half arc
+          stroke="#3b82f6"             // constant blue
+          strokeWidth="4"
+          fill="none"
+          strokeLinecap="round"
+        />
+      </svg>
 
-      {/* Gradient spinner ring */}
-      <div className="absolute inset-0 rounded-full border-4 border-transparent animate-spin"></div>
+      {/* Inner half ring rotating counter-clockwise */}
+      <svg
+        className="absolute inset-0 animate-spin-counter"
+        viewBox="0 0 60 60"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M50 30a20 20 0 0 1 -40 0" // bottom half arc
+          stroke="#8b5cf6"             // constant purple
+          strokeWidth="4"
+          fill="none"
+          strokeLinecap="round"
+        />
+      </svg>
 
-      {/* Logo centered inside spinner */}
+      {/* Logo inside */}
       {showLogo && (
-        <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-600 to-purple-500 flex items-center justify-center shadow-lg animate-pulse-glow">
-          <span className="text-white font-extrabold text-xl">S</span>
+        <div className="w-10 h-10 rounded-lg bg-gray-800 flex items-center justify-center shadow-lg animate-pulse">
+          <span className="text-white font-extrabold text-lg">{logoText}</span>
         </div>
       )}
 
       <style jsx>{`
-        .animate-pulse-glow {
-          animation: pulseGlow 2s infinite;
+        .animate-spin-clockwise {
+          animation: spinCW 2s linear infinite;
         }
-        @keyframes pulseGlow {
-          0%, 100% {
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.6),
-                        0 0 30px rgba(139, 92, 246, 0.5);
-          }
-          50% {
-            box-shadow: 0 0 25px rgba(59, 130, 246, 0.9),
-                        0 0 45px rgba(139, 92, 246, 0.8);
+        .animate-spin-counter {
+          animation: spinCCW 2s linear infinite;
+        }
+        @keyframes spinCW {
+          100% {
+            transform: rotate(360deg);
           }
         }
-        .animate-spin {
-          border-top: 4px solid transparent;
-          border-image: linear-gradient(to right, #3b82f6, #8b5cf6) 1;
+        @keyframes spinCCW {
+          100% {
+            transform: rotate(-360deg);
+          }
         }
       `}</style>
     </div>
