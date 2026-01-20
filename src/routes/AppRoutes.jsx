@@ -2,7 +2,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import ProtectedRoute from "./ProtectedRoute.jsx";
-import Callback from "../pages/Callback";
+import Callback from "../pages/CallbackPage";
 
 /* Lazy-loaded pages */
 const HomePage = lazy(() => import("../pages/HomePage"));
