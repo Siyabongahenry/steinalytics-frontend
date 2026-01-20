@@ -2,6 +2,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import ProtectedRoute from "./ProtectedRoute.jsx";
+import Callback from "../pages/Callback";
 
 /* Lazy-loaded pages */
 const HomePage = lazy(() => import("../pages/HomePage"));
@@ -31,6 +32,8 @@ export default function AppRoutes() {
       }
     >
       <Routes>
+
+        <Route path="/callback" element={<Callback />} />
         {/* Public routes */}
         <Route path="/login" element={<AuthPage />} />
         <Route path="/register" element={<AuthPage />} />
