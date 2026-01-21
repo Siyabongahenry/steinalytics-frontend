@@ -3,7 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import ProtectedRoute from "./ProtectedRoute.jsx";
 import Spinner from "../components/Spinner.jsx"
-import { Callback } from "react-oidc-context";
+import OidcCallback from "../pages/OidcCallback.jsx"
 
 /* Lazy-loaded pages */
 const HomePage = lazy(() => import("../pages/HomePage"));
@@ -35,8 +35,8 @@ export default function AppRoutes() {
       <Routes>
 
         {/* Public routes */}
-        <Route path="/" element={<Home />} />
-        <Route path="/callback" element={<Callback />} /> 
+        <Route path="/" element={<HomePage />} />
+        <Route path="/callback" element={<OidcCallback/>} /> 
         <Route path="/login" element={<AuthPage />} />
         <Route path="/register" element={<AuthPage />} />
         <Route path="/about" element={<AboutPage />} />
