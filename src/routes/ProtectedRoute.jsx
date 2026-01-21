@@ -2,6 +2,7 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "react-oidc-context";
 
+
 export default function ProtectedRoute({ children }) {
   const { isLoading, isAuthenticated } = useAuth();
 
