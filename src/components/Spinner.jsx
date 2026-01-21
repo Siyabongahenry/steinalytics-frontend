@@ -41,25 +41,6 @@ export default function Spinner({ showLogo = true, logoText = "S", size = 100 })
           <span className="text-white font-extrabold text-lg">{logoText}</span>
         </div>
       )}
-
-      <style jsx>{`
-        .animate-spin-clockwise {
-          animation: spinCW 2s linear infinite;
-        }
-        .animate-spin-counter {
-          animation: spinCCW 2s linear infinite;
-        }
-        @keyframes spinCW {
-          100% {
-            transform: rotate(360deg);
-          }
-        }
-        @keyframes spinCCW {
-          100% {
-            transform: rotate(-360deg);
-          }
-        }
-      `}</style>
     </div>
   );
 }
