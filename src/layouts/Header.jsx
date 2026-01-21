@@ -63,7 +63,7 @@ export default function Header({ setSidebarOpen }) {
           <div className="absolute right-0 mt-2 w-40 bg-gray-800 rounded-md shadow-lg overflow-hidden">
             {auth.isAuthenticated ? (
               <button
-                onClick={() => auth.signoutRedirect()}
+                onClick={() => (window.location.href = "/logout")}
                 className="w-full text-left px-4 py-2 hover:bg-red-600 transition text-white"
               >
                 Logout
