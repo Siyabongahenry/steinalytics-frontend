@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import ProtectedRoute from "./ProtectedRoute.jsx";
 import Spinner from "../components/Spinner.jsx"
+import LogoutPage from "../pages/LogoutPage.jsx"
 
 /* Lazy-loaded pages */
 const HomePage = lazy(() => import("../pages/HomePage"));
@@ -44,6 +45,7 @@ export default function AppRoutes() {
         <Route path="/site" element={<SitesPage />} />
         <Route path="/reports" element={<ReportPage />} />
         <Route path="/hours-calculator" element={<HoursCalculatorPage />} />
+        <Route path="logout" element={<LogoutPage/>}/>
 
         {/* Protected routes */}
         <Route element={<ProtectedRoute />}>
