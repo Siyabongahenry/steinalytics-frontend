@@ -4,6 +4,7 @@ import { lazy, Suspense } from "react";
 import ProtectedRoute from "./ProtectedRoute.jsx";
 import Spinner from "../components/Spinner.jsx"
 import LogoutPage from "../pages/LogoutPage.jsx"
+import CallbackPage from "../pages/CallbackPage"
 
 /* Lazy-loaded pages */
 const HomePage = lazy(() => import("../pages/HomePage"));
@@ -39,6 +40,7 @@ export default function AppRoutes() {
         <Route path="/login" element={<AuthPage />} />
         <Route path="/register" element={<AuthPage />} />
         <Route path="/about" element={<AboutPage />} />
+        <Route path="/callback" element={<CallbackPage />} />
 
         {/* Main app routes */}
         <Route path="/home" element={<HomePage />} />
