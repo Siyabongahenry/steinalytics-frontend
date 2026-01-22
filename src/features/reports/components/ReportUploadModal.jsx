@@ -111,8 +111,6 @@ const ReportUploadModal = ({ isOpen, onClose, reportType, reportTitle, reportDes
         if (res.data) charts.push( ...res.data );
             
 
-         console.log(charts[0].Date)
-
       } catch (err) {
         clearInterval(interval);
         console.error(err);
