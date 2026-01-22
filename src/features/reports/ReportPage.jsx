@@ -1,18 +1,7 @@
 import React, { useState } from "react";
 import ReportCard from "./components/ReportCard";
 import ReportUploadModal from "./components/ReportUploadModal";
-import { FaClock, FaFingerprint, FaExclamationTriangle, FaUserCheck,FaUsers } from "react-icons/fa";
-
-import Spinner from "../../components/Spinner"
-const reports = [
-  { type: "vip-validation", title: "VIP Validation", description: "Identify incorrect VIP Codes", icon: <FaExclamationTriangle /> },
-  { type: "overbooking", title: "Overbooking Reports", description: "Detect overbooked employees", icon: <FaExclamationTriangle /> },
-  { type: "multiple-clockings", title: "Multiple Clocking Reports", description: "Detect multiple clockings", icon: <FaClock /> },
-  { type: "exemption", title: "Exemption Report", description: "Employees with hours greater than 72 per week", icon: <FaExclamationTriangle /> },
-  { type: "device-clockings", title: "Device Clockings Count", description: "Total clocking per machine", icon: <FaFingerprint /> },
-  { type: "employees-attendance", title: "Employees Attendance", description: "Count total attendance per employee", icon: <FaUserCheck/> },
-  { type: "employees-on-site", title: "Summary of Employees per Site", description: "Count total employees per site", icon: <FaUsers/> },
-];
+import { REPORTS } from "./config/reportConfig"; // <-- import centralized reports
 
 const ReportPage = () => {
   const [selectedReport, setSelectedReport] = useState(null);
@@ -25,26 +14,28 @@ const ReportPage = () => {
 
       <p className="text-gray-400 mb-6">
         Upload Excel or CSV files to generate reports instantly. Download results with one click.
-     
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {reports.map((report) => (
-          <ReportCard
-            key={report.type}
-            title={report.title}
-            description={report.description}
-            icon={report.icon}
-            onClick={() => setSelectedReport(report)}
-          />
-        ))}
+        {REPORTS.map((report) => {
+          const Icon = report.icon;
+          return (
+            <ReportCard
+              key={report.type}
+              title={report.title}
+              description={report.description}
+              icon={<Icon />}
+              onClick={() => setSelectedReport(report)}
+            />
+          );
+        })}
       </div>
 
       <ReportUploadModal
         isOpen={!!selectedReport}
         reportType={selectedReport?.type}
-        reportTitle = {selectedReport?.title}
-        reportDescription ={selectedReport?.description}
+        reportTitle={selectedReport?.title}
+        reportDescription={selectedReport?.description}
         onClose={() => setSelectedReport(null)}
       />
     </div>

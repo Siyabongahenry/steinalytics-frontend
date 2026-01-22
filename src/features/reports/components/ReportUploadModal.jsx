@@ -1,11 +1,15 @@
 // src/components/ReportUploadModal.jsx
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { uploadReport } from "../services/ReportServices";
-import ReusableChart from "./ReusableChart";
 import { FaCheckCircle, FaExclamationCircle, FaInfoCircle, FaDownload } from "react-icons/fa";
+import FileProgressList from "./ReportUploadModal/FileProgressList";
+import DownloadButtons from "./ReportUploadModal/DownloadButtons";
+import ChartsDisplay from "./ReportUploadModal/ChartsDisplay";
 
+// Main Modal Component
 const ReportUploadModal = ({ isOpen, onClose, reportType, reportTitle, reportDescription }) => {
+  // --- State ---
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [downloadUrls, setDownloadUrls] = useState([]);
@@ -13,6 +17,19 @@ const ReportUploadModal = ({ isOpen, onClose, reportType, reportTitle, reportDes
   const [progress, setProgress] = useState({});
   const [error, setError] = useState("");
 
+  // --- Reset modal state on close ---
+  useEffect(() => {
+    if (!isOpen) {
+      setFiles([]);
+      setLoading(false);
+      setDownloadUrls([]);
+      setChartData([]);
+      setProgress({});
+      setError("");
+    }
+  }, [isOpen]);
+
+  // --- Dropzone callback ---
   const onDrop = useCallback((acceptedFiles) => {
     setFiles(acceptedFiles);
     setDownloadUrls([]);
@@ -30,6 +47,7 @@ const ReportUploadModal = ({ isOpen, onClose, reportType, reportTitle, reportDes
     multiple: true,
   });
 
+  // --- Animate processing bar ---
   const animateProcessing = (fileName) => {
     let proc = 0;
     const interval = setInterval(() => {
@@ -42,8 +60,10 @@ const ReportUploadModal = ({ isOpen, onClose, reportType, reportTitle, reportDes
     return interval;
   };
 
+  // --- Upload files and generate reports ---
   const handleUpload = async () => {
     if (!files.length) return;
+
     setLoading(true);
     setError("");
     setDownloadUrls([]);
@@ -54,6 +74,7 @@ const ReportUploadModal = ({ isOpen, onClose, reportType, reportTitle, reportDes
     const charts = [];
 
     for (const file of files) {
+      // Initialize progress
       setProgress(prev => ({
         ...prev,
         [file.name]: { upload: 0, processing: 0, status: "uploading", errorMsg: "" }
@@ -72,27 +93,22 @@ const ReportUploadModal = ({ isOpen, onClose, reportType, reportTitle, reportDes
         });
 
         clearInterval(interval);
+
         setProgress(prev => ({
           ...prev,
           [file.name]: { ...prev[file.name], upload: 100, processing: 0, status: "processing" }
         }));
 
-        const procInterval = setInterval(() => {
-          setProgress(prev => {
-            const current = prev[file.name];
-            const nextProc = Math.min(current.processing + 3, 95);
-            return { ...prev, [file.name]: { ...current, processing: nextProc } };
-          });
-        }, 100);
-
-        clearInterval(procInterval);
+        // Finish processing instantly (can adjust if backend provides progress)
         setProgress(prev => ({
           ...prev,
           [file.name]: { upload: 100, processing: 100, status: "done", errorMsg: "" }
         }));
 
+        // Collect download URLs and chart data
         urls.push({ name: file.name, url: res.download_url });
-        if (res.chart_data) charts.push({ title: file.name, ...res.chart_data });
+        if (res.data) charts.push( ...res.data );
+
       } catch (err) {
         clearInterval(interval);
         console.error(err);
@@ -121,6 +137,7 @@ const ReportUploadModal = ({ isOpen, onClose, reportType, reportTitle, reportDes
   return (
     <div className="fixed inset-0 bg-black bg-opacity-90 flex flex-col items-center justify-start overflow-y-auto z-50 p-6">
       <div className="bg-gray-900 text-white rounded-2xl w-full max-w-6xl p-6 relative">
+        {/* Close Button */}
         <button
           className="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl"
           onClick={onClose}
@@ -156,58 +173,10 @@ const ReportUploadModal = ({ isOpen, onClose, reportType, reportTitle, reportDes
           )}
         </div>
 
-        {/* File progress */}
-        {files.length > 0 && (
-          <ul className="mb-4 space-y-4">
-            {files.map((file) => {
-              const prog = progress[file.name] || { upload: 0, processing: 0, status: "idle", errorMsg: "" };
-              const isError = prog.status === "error";
-              const isDone = prog.status === "done";
+        {/* File Progress */}
+        <FileProgressList files={files} progress={progress} />
 
-              return (
-                <li key={file.name}>
-                  <div className="flex items-center justify-between mb-1">
-                    <p className="text-gray-200 truncate">{file.name}</p>
-                    {isDone && <FaCheckCircle className="text-green-400" />}
-                    {isError && <FaExclamationCircle className="text-red-500" />}
-                  </div>
-
-                  {/* Upload bar */}
-                  <div className={`w-full rounded-full h-5 mb-2 overflow-hidden relative border ${isError && prog.upload < 100 ? "border-red-500" : "border-gray-700"}`}>
-                    <div
-                      className={`h-5 transition-all duration-300 ${isError && prog.upload < 100 ? "bg-red-500" : "bg-blue-500"}`}
-                      style={{ width: `${prog.upload}%` }}
-                    />
-                    <span className="absolute right-2 top-0 text-xs text-white">
-                      Upload {prog.upload}%
-                    </span>
-                    {isError && prog.upload < 100 && (
-                      <span className="absolute left-2 top-0 text-xs text-white">{prog.errorMsg}</span>
-                    )}
-                  </div>
-
-                  {/* Processing bar */}
-                  {prog.upload === 100 && (
-                    <div className={`w-full rounded-full h-5 mb-2 overflow-hidden relative border ${isError && prog.upload === 100 ? "border-red-500" : "border-gray-700"}`}>
-                      <div
-                        className={`h-5 transition-all duration-300 ${isError && prog.upload === 100 ? "bg-red-500" : "bg-purple-500"}`}
-                        style={{ width: `${prog.processing}%` }}
-                      />
-                      <span className="absolute right-2 top-0 text-xs text-white">
-                        Processing {prog.processing}%
-                      </span>
-                      {isError && prog.upload === 100 && (
-                        <span className="absolute left-2 top-0 text-xs text-white">{prog.errorMsg}</span>
-                      )}
-                    </div>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
-        )}
-
-        {/* Upload button */}
+        {/* Upload Button */}
         <button
           className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg w-full mb-4 transition disabled:opacity-50"
           onClick={handleUpload}
@@ -216,45 +185,14 @@ const ReportUploadModal = ({ isOpen, onClose, reportType, reportTitle, reportDes
           {loading ? "Uploading..." : "Upload & Generate Reports"}
         </button>
 
-        {/* Error summary */}
+        {/* Error */}
         {error && <p className="text-red-500 mb-4">{error}</p>}
 
-        {/* Download buttons */}
-        {downloadUrls.length > 0 && (
-          <div className="mb-6">
-            <h3 className="font-bold text-xl mb-4">Download Reports</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {downloadUrls.map((item) => (
-                <a
-                  key={item.url}
-                  href={item.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between bg-green-700 hover:bg-green-600 text-white font-medium px-4 py-3 rounded-lg shadow-md transition"
-                >
-                  <span className="truncate">{item.name}</span>
-                  <FaDownload className="ml-2" />
-                </a>
-              ))}
-            </div>
-          </div>
-        )}
+        {/* Download Buttons */}
+        <DownloadButtons downloadUrls={downloadUrls} />
 
         {/* Charts */}
-        {chartData.length > 0 && (
-          <div className="space-y-6">
-            {chartData.map((chart, idx) => (
-              <ReusableChart
-                key={idx}
-                title={chart.title}
-                type={chart.type || "line"}
-                data={chart.data || []}
-                xKey={chart.xKey || ""}
-                yKeys={chart.yKeys || []}
-              />
-            ))}
-          </div>
-        )}
+        <ChartsDisplay chartData={chartData} reportType={reportType} />
       </div>
     </div>
   );
