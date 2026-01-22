@@ -2,7 +2,7 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { uploadReport } from "../services/ReportServices";
-import { FaCheckCircle, FaExclamationCircle, FaInfoCircle, FaDownload } from "react-icons/fa";
+import { FaInfoCircle } from "react-icons/fa";
 import FileProgressList from "./ReportUploadModal/FileProgressList";
 import DownloadButtons from "./ReportUploadModal/DownloadButtons";
 import ChartsDisplay from "./ReportUploadModal/ChartsDisplay";
@@ -107,7 +107,11 @@ const ReportUploadModal = ({ isOpen, onClose, reportType, reportTitle, reportDes
 
         // Collect download URLs and chart data
         urls.push({ name: file.name, url: res.download_url });
+      
         if (res.data) charts.push( ...res.data );
+            
+
+         console.log(charts[0].Date)
 
       } catch (err) {
         clearInterval(interval);

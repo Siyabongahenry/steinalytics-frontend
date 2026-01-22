@@ -8,9 +8,7 @@ const ChartsDisplay = ({ chartData, reportType }) => {
 
   return (
     <div className="space-y-6">
-      {reportType === "device-clockings" && chartData.map((chart, idx) => (
-        <DeviceClockingsChart key={idx} data={chart} />
-      ))}
+      {reportType === "device-clockings" &&  <DeviceClockingsChart data={chartData} />}
 
       {/* Add other report types dynamically */}
       {/* {reportType === "vip-validation" && <VipValidationChart data={chartData} />} */}
