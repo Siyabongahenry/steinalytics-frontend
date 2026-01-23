@@ -5,12 +5,12 @@ import {
   Line,
   XAxis,
   YAxis,
-  Tooltip,
   CartesianGrid,
   ResponsiveContainer,
+  Legend,
+  ReferenceLine,
 } from "recharts";
 
-// Transform backend data for Recharts
 const transformData = (data, selectedMeters) => {
   const dates = [...new Set(data.map((d) => d.Date))].sort();
   const meters = selectedMeters.length
@@ -21,30 +21,36 @@ const transformData = (data, selectedMeters) => {
     const row = { Date: date };
     meters.forEach((meter) => {
       const entry = data.find((d) => d.Date === date && d.MeterID === meter);
-      row[meter] = entry ? entry.Unique_Clock_Count : 0; // Fill missing dates with 0
+      row[meter] = entry ? entry.Unique_Clock_Count : 0;
     });
     return row;
   });
 };
 
 const DeviceClockingsChart = ({ data }) => {
-  // Extract all meters
   const allMeterKeys = useMemo(
     () => [...new Set(data.map((d) => d.MeterID))],
     [data]
   );
 
-  // Selected meters for compare mode
   const [selectedMeters, setSelectedMeters] = useState(allMeterKeys);
 
-  // Recharts data filtered by selected meters
   const chartData = useMemo(
     () => transformData(data, selectedMeters),
     [data, selectedMeters]
   );
 
-  // react-select options
   const meterOptions = allMeterKeys.map((m) => ({ value: m, label: m }));
+
+  // Custom legend click handler
+  const handleLegendClick = (o) => {
+    const { dataKey } = o;
+    if (selectedMeters.includes(dataKey)) {
+      setSelectedMeters(selectedMeters.filter((m) => m !== dataKey));
+    } else {
+      setSelectedMeters([...selectedMeters, dataKey]);
+    }
+  };
 
   return (
     <div className="bg-gray-900 p-6 rounded-xl shadow-lg">
@@ -52,7 +58,6 @@ const DeviceClockingsChart = ({ data }) => {
         Device Clockings per Meter
       </h3>
 
-      {/* Device multi-select */}
       <div className="mb-4">
         <Select
           options={meterOptions}
@@ -64,8 +69,7 @@ const DeviceClockingsChart = ({ data }) => {
         />
       </div>
 
-      {/* Line chart */}
-      <ResponsiveContainer width="100%" height={220}>
+      <ResponsiveContainer width="100%" height={250}>
         <LineChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 40 }}>
           <XAxis
             dataKey="Date"
@@ -75,11 +79,24 @@ const DeviceClockingsChart = ({ data }) => {
             tick={{ fontSize: 12 }}
           />
           <YAxis stroke="#fff" tick={{ fontSize: 12 }} />
-          <Tooltip
-            contentStyle={{ backgroundColor: "#1f2937", borderRadius: "8px", border: "none" }}
-            labelStyle={{ color: "#fff" }}
-          />
           <CartesianGrid stroke="#444" strokeDasharray="4 4" />
+
+          {/* Threshold line */}
+          <ReferenceLine
+            y={150}
+            stroke="red"
+            strokeDasharray="6 6"
+            label={{ value: "Threshold (150)", position: "top", fill: "red" }}
+          />
+
+          {/* Interactive legend */}
+          <Legend
+            wrapperStyle={{ color: "#fff" }}
+            verticalAlign="bottom"
+            height={36}
+            onClick={handleLegendClick}
+          />
+
           {selectedMeters.map((key, idx) => (
             <Line
               key={idx}
@@ -94,7 +111,6 @@ const DeviceClockingsChart = ({ data }) => {
         </LineChart>
       </ResponsiveContainer>
 
-      {/* Buttons */}
       <div className="mt-4 flex gap-3">
         <button
           className="bg-blue-600 hover:bg-blue-700 transition-colors text-white px-4 py-2 rounded-lg shadow"
