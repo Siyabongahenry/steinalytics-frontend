@@ -14,7 +14,7 @@ import {
  * Props:
  *  - data: Array of objects [{ "User Originator": "John", incorrect_entry_count: 5 }, ...]
  */
-const UserOriginatorCountChart = ({ data }) => {
+const UserOriginatorCountChart = ({ title,data }) => {
   // Sort descending by count for nicer chart
   const chartData = useMemo(() => {
     return [...data].sort((a, b) => b.incorrect_entry_count - a.incorrect_entry_count);
@@ -29,7 +29,7 @@ const UserOriginatorCountChart = ({ data }) => {
   return (
     <div className="bg-gray-900 p-6 rounded-xl shadow-lg w-full">
       <h3 className="text-white font-semibold mb-4 text-lg">
-        Incorrect Entries per User Originator
+        {title}
       </h3>
       <ResponsiveContainer width="100%" height={280}>
         <BarChart

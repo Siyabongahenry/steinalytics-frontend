@@ -10,15 +10,13 @@ const ChartsDisplay = ({ chartData, reportType }) => {
   return (
     <div className="space-y-6">
       {reportType === "device-clockings" &&  <DeviceClockingsChart data={chartData} />}
-      {reportType === "vip-validation" &&  <UserOriginatorCountChart data={chartData} />}
+      {reportType === "vip-validation" &&  <UserOriginatorCountChart title="Entries with Incorrect VIP per Originator" data={chartData} />}
       {reportType === "overbooking" &&  (<>
-        <div>
-          <UserOriginatorCountChart data={chartData.duplicate_originator_count} />
-        </div>
-        <div>
-          <UserOriginatorCountChart data={chartData.overbooking_originator_count} />
-        </div>
-      
+        {chartData.map((group, idx) => (
+            <div key={idx}>
+              <UserOriginatorCountChart title={group.type} data={group.records} />
+            </div>
+          ))}
       </>)}
 
       {/* Add other report types dynamically */}
