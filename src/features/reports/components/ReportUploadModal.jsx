@@ -2,14 +2,31 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { uploadReport } from "../services/ReportServices";
-import { FaInfoCircle } from "react-icons/fa";
+import { FaInfoCircle, FaUpload } from "react-icons/fa";
 import FileProgressList from "./ReportUploadModal/FileProgressList";
 import DownloadButtons from "./ReportUploadModal/DownloadButtons";
 import ChartsDisplay from "./ReportUploadModal/ChartsDisplay";
+import { useInView } from "react-intersection-observer";
 
-// Main Modal Component
+// LazyChart wrapper inside same file
+const LazyChart = ({ data }) => {
+  const { ref, inView } = useInView({
+    triggerOnce: true,
+    threshold: 0.2, // load when 20% visible
+  });
+
+  return (
+    <div ref={ref} className="min-h-[250px] flex items-center justify-center">
+      {inView ? (
+        <ChartsDisplay chartData={[data]} />
+      ) : (
+        <p className="text-gray-500">Loading chart...</p>
+      )}
+    </div>
+  );
+};
+
 const ReportUploadModal = ({ isOpen, onClose, reportType, reportTitle, reportDescription }) => {
-  // --- State ---
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [downloadUrls, setDownloadUrls] = useState([]);
@@ -17,7 +34,6 @@ const ReportUploadModal = ({ isOpen, onClose, reportType, reportTitle, reportDes
   const [progress, setProgress] = useState({});
   const [error, setError] = useState("");
 
-  // --- Reset modal state on close ---
   useEffect(() => {
     if (!isOpen) {
       setFiles([]);
@@ -29,7 +45,6 @@ const ReportUploadModal = ({ isOpen, onClose, reportType, reportTitle, reportDes
     }
   }, [isOpen]);
 
-  // --- Dropzone callback ---
   const onDrop = useCallback((acceptedFiles) => {
     setFiles(acceptedFiles);
     setDownloadUrls([]);
@@ -47,7 +62,6 @@ const ReportUploadModal = ({ isOpen, onClose, reportType, reportTitle, reportDes
     multiple: true,
   });
 
-  // --- Animate processing bar ---
   const animateProcessing = (fileName) => {
     let proc = 0;
     const interval = setInterval(() => {
@@ -60,7 +74,6 @@ const ReportUploadModal = ({ isOpen, onClose, reportType, reportTitle, reportDes
     return interval;
   };
 
-  // --- Upload files and generate reports ---
   const handleUpload = async () => {
     if (!files.length) return;
 
@@ -74,7 +87,6 @@ const ReportUploadModal = ({ isOpen, onClose, reportType, reportTitle, reportDes
     const charts = [];
 
     for (const file of files) {
-      // Initialize progress
       setProgress(prev => ({
         ...prev,
         [file.name]: { upload: 0, processing: 0, status: "uploading", errorMsg: "" }
@@ -99,17 +111,13 @@ const ReportUploadModal = ({ isOpen, onClose, reportType, reportTitle, reportDes
           [file.name]: { ...prev[file.name], upload: 100, processing: 0, status: "processing" }
         }));
 
-        // Finish processing instantly (can adjust if backend provides progress)
         setProgress(prev => ({
           ...prev,
           [file.name]: { upload: 100, processing: 100, status: "done", errorMsg: "" }
         }));
 
-        // Collect download URLs and chart data
         urls.push({ name: file.name, url: res.download_url });
-      
-        if (res.data) charts.push( ...res.data );
-            
+        if (res.data) charts.push(...res.data);
 
       } catch (err) {
         clearInterval(interval);
@@ -160,41 +168,63 @@ const ReportUploadModal = ({ isOpen, onClose, reportType, reportTitle, reportDes
           )}
         </div>
 
-        {/* Dropzone */}
-        <div
-          {...getRootProps()}
-          className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer mb-4 transition ${
-            isDragActive ? "border-blue-400" : "border-gray-600"
-          }`}
-        >
-          <input {...getInputProps()} />
-          {isDragActive ? (
-            <p>Drop files here...</p>
-          ) : (
-            <p>Drag & drop Excel or CSV files here, or click to select</p>
-          )}
+        {/* Two-column layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Left column: Dropzone + File Progress + Upload */}
+          <div>
+            {/* Dropzone */}
+            <div
+              {...getRootProps()}
+              className={`border-2 border-dashed rounded-xl h-32 flex items-center justify-center text-center cursor-pointer mb-6 transition ${
+                isDragActive ? "border-blue-400 bg-blue-900/20" : "border-gray-600 bg-gray-800/40"
+              } hover:border-blue-500 hover:bg-gray-800/60`}
+            >
+              <input {...getInputProps()} />
+              {isDragActive ? (
+                <p className="flex items-center gap-2 text-blue-300 font-medium">
+                  <FaUpload /> Drop files here...
+                </p>
+              ) : (
+                <p className="flex items-center gap-2 text-gray-400">
+                  <FaUpload /> Drag & drop Excel/CSV or click to select
+                </p>
+              )}
+            </div>
+
+            {/* File Progress */}
+            <FileProgressList files={files} progress={progress} />
+
+            {/* Upload Button */}
+            <button
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg w-full mb-4 transition disabled:opacity-50"
+              onClick={handleUpload}
+              disabled={loading || files.length === 0}
+            >
+              {loading ? "Uploading..." : "Upload & Generate Reports"}
+            </button>
+
+            {/* Error */}
+            {error && <p className="text-red-500 mb-4">{error}</p>}
+          </div>
+
+          {/* Right column: Downloads + Charts */}
+          <div className="relative">
+            {/* Sticky header */}
+            <div className="sticky top-0 bg-gray-900 z-10 pb-2">
+              <h3 className="text-xl font-semibold text-blue-300">Report Results</h3>
+              <DownloadButtons downloadUrls={downloadUrls} />
+            </div>
+
+            {/* Charts with scrollable container */}
+            <div className="min-h-[400px] max-h-[600px] overflow-y-auto pr-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {chartData.map((chart, idx) => (
+                  <LazyChart key={idx} data={chart} />
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
-
-        {/* File Progress */}
-        <FileProgressList files={files} progress={progress} />
-
-        {/* Upload Button */}
-        <button
-          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg w-full mb-4 transition disabled:opacity-50"
-          onClick={handleUpload}
-          disabled={loading || files.length === 0}
-        >
-          {loading ? "Uploading..." : "Upload & Generate Reports"}
-        </button>
-
-        {/* Error */}
-        {error && <p className="text-red-500 mb-4">{error}</p>}
-
-        {/* Download Buttons */}
-        <DownloadButtons downloadUrls={downloadUrls} />
-
-        {/* Charts */}
-        <ChartsDisplay chartData={chartData} reportType={reportType} />
       </div>
     </div>
   );
