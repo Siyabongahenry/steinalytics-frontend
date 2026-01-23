@@ -11,6 +11,15 @@ const ChartsDisplay = ({ chartData, reportType }) => {
     <div className="space-y-6">
       {reportType === "device-clockings" &&  <DeviceClockingsChart data={chartData} />}
       {reportType === "vip-validation" &&  <UserOriginatorCountChart data={chartData} />}
+      {reportType === "overbooking" &&  (<>
+        <div>
+          <UserOriginatorCountChart data={chartData.duplicate_originator_count} />
+        </div>
+        <div>
+          <UserOriginatorCountChart data={chartData.overbooking_originator_count} />
+        </div>
+      
+      </>)}
 
       {/* Add other report types dynamically */}
       {/* {reportType === "vip-validation" && <VipValidationChart data={chartData} />} */}
