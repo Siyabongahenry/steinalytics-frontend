@@ -1,5 +1,5 @@
 // src/components/charts/UserOriginatorCountChart.jsx
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import {
   BarChart,
   Bar,
@@ -19,6 +19,12 @@ const UserOriginatorCountChart = ({ data }) => {
   const chartData = useMemo(() => {
     return [...data].sort((a, b) => b.incorrect_entry_count - a.incorrect_entry_count);
   }, [data]);
+
+  // Generate one random color per chart instance (stable across re-renders)
+  const [barColor] = useState(() => {
+    const hue = Math.floor(Math.random() * 360);
+    return `hsl(${hue}, 70%, 55%)`; // vibrant color safe for dark background
+  });
 
   return (
     <div className="bg-gray-900 p-6 rounded-xl shadow-lg w-full">
@@ -42,7 +48,7 @@ const UserOriginatorCountChart = ({ data }) => {
           <YAxis stroke="#fff" tick={{ fontSize: 12 }} />
           <Bar
             dataKey="incorrect_entry_count"
-            fill="#3b82f6"
+            fill={barColor}
             radius={[6, 6, 0, 0]}
             barSize={30}
           >
