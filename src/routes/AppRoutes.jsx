@@ -41,17 +41,15 @@ export default function AppRoutes() {
         <Route path="/register" element={<AuthPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/callback" element={<CallbackPage />} />
-
-        {/* Main app routes */}
         <Route path="/home" element={<HomePage />} />
-        <Route path="/site" element={<SitesPage />} />
-        <Route path="/reports" element={<ReportPage />} />
-        <Route path="/hours-calculator" element={<HoursCalculatorPage />} />
-        <Route path="logout" element={<LogoutPage/>}/>
-
+       
         {/* Protected routes */}
         <Route element={<ProtectedRoute />}>
-          <Route path="/devices" element={<DevicesPage />} />
+          <Route path="/site" element={<SitesPage />} />
+          <Route path="/reports" element={<ReportPage />} />
+          <Route path="/hours-calculator" element={<HoursCalculatorPage />} />
+        <Route path="logout" element={<LogoutPage/>}/>
+          
         </Route>
 
         {/* Redirect root "/" to "/home" */}
