@@ -1,54 +1,95 @@
-// src/pages/ProfilePage.jsx
-import { useEffect, useState } from "react";
-import { getUserReports, deleteUserReport } from "../services/UserReportsService";
-import { useOidc } from "@axa-fr/react-oidc-context";
+import { useEffect, useState, useMemo } from "react";
+import { useAuth } from "react-oidc-context";
+import { getUserReports, deleteUserReport } from "./services/UserReportService";
 import { formatDistanceToNowStrict, parseISO } from "date-fns";
 import { FaTrash } from "react-icons/fa";
 
 export default function ProfilePage() {
-  const { oidcUser } = useOidc();
+  const auth = useAuth();
+
   const [reports, setReports] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
-  const [deleting, setDeleting] = useState(null);
+  const [deletingId, setDeletingId] = useState(null);
 
+  // ─────────────────────────────────────────────
+  // Fetch reports
+  // ─────────────────────────────────────────────
   useEffect(() => {
+    if (!auth.isAuthenticated) return;
+
+    const fetchReports = async () => {
+      setLoading(true);
+      try {
+        const data = await getUserReports();
+        setReports(data);
+      } catch (err) {
+        alert(err.message || "Failed to load reports");
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchReports();
-  }, []);
+  }, [auth.isAuthenticated]);
 
-  const fetchReports = async () => {
-    setLoading(true);
-    try {
-      const data = await getUserReports();
-      setReports(data);
-    } catch (err) {
-      alert(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // ─────────────────────────────────────────────
+  // Delete report
+  // ─────────────────────────────────────────────
   const handleDelete = async (reportId) => {
     if (!window.confirm("Are you sure you want to delete this report?")) return;
-    setDeleting(reportId);
+
+    setDeletingId(reportId);
     try {
       await deleteUserReport(reportId);
-      setReports(reports.filter(r => r.id !== reportId));
+      setReports((prev) => prev.filter((r) => r.id !== reportId));
     } catch (err) {
-      alert(err.message);
+      alert(err.message || "Failed to delete report");
     } finally {
-      setDeleting(null);
+      setDeletingId(null);
     }
   };
 
-  const filteredReports = reports.filter(report =>
-    report.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // ─────────────────────────────────────────────
+  // Filtered reports
+  // ─────────────────────────────────────────────
+  const filteredReports = useMemo(() => {
+    return reports.filter((report) =>
+      report.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [reports, searchTerm]);
 
+  // ─────────────────────────────────────────────
+  // Auth states
+  // ─────────────────────────────────────────────
+  if (auth.isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-900 text-white p-6">
+        <p>Loading user profile...</p>
+      </div>
+    );
+  }
+
+  if (!auth.isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gray-900 text-white p-6">
+        <p>You must be logged in to view this page.</p>
+      </div>
+    );
+  }
+
+  const userName = auth.user?.profile?.name || "User";
+
+  // ─────────────────────────────────────────────
+  // Render
+  // ─────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-gray-900 text-white p-6">
-      <h1 className="text-3xl font-bold mb-6">Welcome, {oidcUser?.profile?.name || "User"}</h1>
-      
+      <h1 className="text-3xl font-bold mb-6">
+        Welcome, {userName}
+      </h1>
+
+      {/* Search */}
       <div className="mb-6">
         <input
           type="text"
@@ -59,6 +100,7 @@ export default function ProfilePage() {
         />
       </div>
 
+      {/* Content */}
       {loading ? (
         <p>Loading reports...</p>
       ) : (
@@ -80,24 +122,39 @@ export default function ProfilePage() {
                   </td>
                 </tr>
               ) : (
-                filteredReports.map(report => (
-                  <tr key={report.id} className="border-b border-gray-700 hover:bg-gray-700 transition">
+                filteredReports.map((report) => (
+                  <tr
+                    key={report.id}
+                    className="border-b border-gray-700 hover:bg-gray-700 transition"
+                  >
                     <td className="px-4 py-2">{report.name}</td>
+
                     <td className="px-4 py-2">
-                      <a href={report.link} target="_blank" rel="noopener noreferrer" className="text-indigo-400 hover:underline">
+                      <a
+                        href={report.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-indigo-400 hover:underline"
+                      >
                         View
                       </a>
                     </td>
+
                     <td className="px-4 py-2">
-                      {formatDistanceToNowStrict(parseISO(report.expires_at), { addSuffix: true })}
+                      {formatDistanceToNowStrict(
+                        parseISO(report.expires_at),
+                        { addSuffix: true }
+                      )}
                     </td>
+
                     <td className="px-4 py-2 text-center">
                       <button
                         onClick={() => handleDelete(report.id)}
-                        disabled={deleting === report.id}
-                        className="inline-flex items-center justify-center bg-red-600 hover:bg-red-700 px-3 py-1 rounded-md transition"
+                        disabled={deletingId === report.id}
+                        className="inline-flex items-center justify-center bg-red-600 hover:bg-red-700 disabled:opacity-60 px-3 py-1 rounded-md transition"
                       >
-                        <FaTrash className="mr-2" /> {deleting === report.id ? "Deleting..." : "Delete"}
+                        <FaTrash className="mr-2" />
+                        {deletingId === report.id ? "Deleting..." : "Delete"}
                       </button>
                     </td>
                   </tr>
