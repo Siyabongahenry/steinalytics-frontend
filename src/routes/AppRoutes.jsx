@@ -11,6 +11,7 @@ const HomePage = lazy(() => import("../pages/HomePage"));
 const SitesPage = lazy(() => import("../pages/SitesPage"));
 const DevicesPage = lazy(() => import("../features/devices/DevicesPage"));
 const ReportPage = lazy(() => import("../features/reports/ReportPage"));
+const ProfilePage = lazy(() => import("../features/profile/ProfilePage.jsx"));
 const HoursCalculatorPage = lazy(() =>
   import("../features/hoursCalculator/HoursCalculatorPage")
 );
@@ -39,6 +40,7 @@ export default function AppRoutes() {
         <Route path="/login" element={<AuthPage />} />
         <Route path="/register" element={<AuthPage />} />
         <Route path="/about" element={<AboutPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
         <Route path="/callback" element={<CallbackPage />} />
 
         {/* Protected routes */}
