@@ -9,7 +9,6 @@ import CallbackPage from "../pages/CallbackPage";
 /* Lazy-loaded pages */
 const HomePage = lazy(() => import("../pages/HomePage"));
 const SitesPage = lazy(() => import("../pages/SitesPage"));
-const DevicesPage = lazy(() => import("../features/devices/DevicesPage"));
 const ReportPage = lazy(() => import("../features/reports/ReportPage"));
 const ProfilePage = lazy(() => import("../features/profile/ProfilePage.jsx"));
 const HoursCalculatorPage = lazy(() =>
@@ -46,7 +45,6 @@ export default function AppRoutes() {
         {/* Protected routes */}
         <Route element={<ProtectedRoute />}>
           <Route path="/site" element={<SitesPage />} />
-          <Route path="/devices" element={<DevicesPage />} />
           <Route path="/reports" element={<ReportPage />} />
           <Route path="/hours-calculator" element={<HoursCalculatorPage />} />
           <Route path="/logout" element={<LogoutPage />} />
