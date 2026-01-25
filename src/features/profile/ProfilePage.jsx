@@ -1,41 +1,38 @@
 import { useEffect, useState, useMemo } from "react";
-import { useAuth } from "react-oidc-context";
 import { getUserReports, deleteUserReport } from "./services/UserReportService";
 import { formatDistanceToNowStrict, parseISO } from "date-fns";
 import { FaTrash } from "react-icons/fa";
+import Toast from "../../components/Toast";
 
 export default function ProfilePage() {
-  const auth = useAuth();
-
   const [reports, setReports] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState(null);
 
-  // ─────────────────────────────────────────────
-  // Fetch reports
-  // ─────────────────────────────────────────────
-  useEffect(() => {
-    if (!auth.isAuthenticated) return;
+  // For notifications
+  const [toast, setToast] = useState(null);
 
+  const showToast = (message, type = "error") => {
+    setToast({ message, type });
+  };
+
+  useEffect(() => {
     const fetchReports = async () => {
       setLoading(true);
       try {
         const data = await getUserReports();
         setReports(data);
       } catch (err) {
-        alert(err.message || "Failed to load reports");
+        showToast(err.message || "Failed to load reports");
       } finally {
         setLoading(false);
       }
     };
 
     fetchReports();
-  }, [auth.isAuthenticated]);
+  }, []);
 
-  // ─────────────────────────────────────────────
-  // Delete report
-  // ─────────────────────────────────────────────
   const handleDelete = async (reportId) => {
     if (!window.confirm("Are you sure you want to delete this report?")) return;
 
@@ -43,53 +40,24 @@ export default function ProfilePage() {
     try {
       await deleteUserReport(reportId);
       setReports((prev) => prev.filter((r) => r.id !== reportId));
+      showToast("Report deleted successfully!", "success");
     } catch (err) {
-      alert(err.message || "Failed to delete report");
+      showToast(err.message || "Failed to delete report");
     } finally {
       setDeletingId(null);
     }
   };
 
-  // ─────────────────────────────────────────────
-  // Filtered reports
-  // ─────────────────────────────────────────────
   const filteredReports = useMemo(() => {
     return reports.filter((report) =>
       report.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [reports, searchTerm]);
 
-  // ─────────────────────────────────────────────
-  // Auth states
-  // ─────────────────────────────────────────────
-  if (auth.isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-900 text-white p-6">
-        <p>Loading user profile...</p>
-      </div>
-    );
-  }
-
-  if (!auth.isAuthenticated) {
-    return (
-      <div className="min-h-screen bg-gray-900 text-white p-6">
-        <p>You must be logged in to view this page.</p>
-      </div>
-    );
-  }
-
-  const userName = auth.user?.profile?.name || "User";
-
-  // ─────────────────────────────────────────────
-  // Render
-  // ─────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-6">
-      <h1 className="text-3xl font-bold mb-6">
-        Welcome, {userName}
-      </h1>
+    <div className="min-h-screen bg-gray-900 text-white p-6 relative">
+      <h1 className="text-3xl font-bold mb-6">My Reports</h1>
 
-      {/* Search */}
       <div className="mb-6">
         <input
           type="text"
@@ -100,7 +68,6 @@ export default function ProfilePage() {
         />
       </div>
 
-      {/* Content */}
       {loading ? (
         <p>Loading reports...</p>
       ) : (
@@ -128,7 +95,6 @@ export default function ProfilePage() {
                     className="border-b border-gray-700 hover:bg-gray-700 transition"
                   >
                     <td className="px-4 py-2">{report.name}</td>
-
                     <td className="px-4 py-2">
                       <a
                         href={report.link}
@@ -139,14 +105,9 @@ export default function ProfilePage() {
                         View
                       </a>
                     </td>
-
                     <td className="px-4 py-2">
-                      {formatDistanceToNowStrict(
-                        parseISO(report.expires_at),
-                        { addSuffix: true }
-                      )}
+                      {formatDistanceToNowStrict(parseISO(report.expires_at), { addSuffix: true })}
                     </td>
-
                     <td className="px-4 py-2 text-center">
                       <button
                         onClick={() => handleDelete(report.id)}
@@ -163,6 +124,15 @@ export default function ProfilePage() {
             </tbody>
           </table>
         </div>
+      )}
+
+      {/* Toast */}
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
       )}
     </div>
   );
