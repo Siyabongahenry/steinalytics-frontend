@@ -1,6 +1,5 @@
 // src/services/ReportServices.js
 import axios from "axios";
-import { useAuth } from "react-oidc-context";
 
 const API_BASE = import.meta.env.VITE_API_URL ?? "";
 
@@ -33,38 +32,34 @@ const extractFastApiError = (error) => {
 };
 
 // Hook-based function to upload report with token
-export const useReportServices = () => {
-  const auth = useAuth(); // gives you access to auth.user and auth.user.access_token
 
-  const uploadReport = async (reportType, file, onUploadProgress) => {
-    const endpoint = REPORT_ENDPOINTS[reportType];
 
-    if (!endpoint) {
-      throw new Error(`Unknown report type: ${reportType}`);
-    }
+export const uploadReport = async (reportType, file, onUploadProgress,access_token) => {
+  const endpoint = REPORT_ENDPOINTS[reportType];
 
-    const formData = new FormData();
-    formData.append("file", file); // must match FastAPI param
+  if (!endpoint) {
+    throw new Error(`Unknown report type: ${reportType}`);
+  }
 
-    try {
-      console.log("Sending file to backend");
-      console.log(`File sent to - ${API_BASE}${endpoint}`);
+  const formData = new FormData();
+  formData.append("file", file); // must match FastAPI param
 
-      const response = await axios.post(`${API_BASE}${endpoint}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${auth.user?.access_token}`, // <-- include token here
-        },
-        onUploadProgress,
-      });
+  try {
+    console.log("Sending file to backend");
+    console.log(`File sent to - ${API_BASE}${endpoint}`);
 
-      console.log(`File sent to - ${API_BASE}${endpoint}`);
+    const response = await axios.post(`${API_BASE}${endpoint}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${access_token}`, // <-- include token here
+      },
+      onUploadProgress,
+    });
 
-      return response.data;
-    } catch (error) {
-      throw new Error(extractFastApiError(error));
-    }
-  };
+    console.log(`File sent to - ${API_BASE}${endpoint}`);
 
-  return { uploadReport };
+    return response.data;
+  } catch (error) {
+    throw new Error(extractFastApiError(error));
+  }
 };

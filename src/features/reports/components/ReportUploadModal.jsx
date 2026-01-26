@@ -5,6 +5,7 @@ import { FaInfoCircle, FaUpload } from "react-icons/fa";
 import FileProgressList from "./ReportUploadModal/FileProgressList";
 import DownloadButtons from "./ReportUploadModal/DownloadButtons";
 import ChartsDisplay from "./ReportUploadModal/ChartsDisplay";
+import { useAuth } from "react-oidc-context";
 
 const ReportUploadModal = ({
   isOpen,
@@ -13,6 +14,8 @@ const ReportUploadModal = ({
   reportTitle,
   reportDescription,
 }) => {
+
+   const auth = useAuth();
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [downloadUrls, setDownloadUrls] = useState([]);
@@ -98,7 +101,7 @@ const ReportUploadModal = ({
             ...prev,
             [file.name]: { ...prev[file.name], upload: percent },
           }));
-        });
+        }, auth.user?.access_token);
 
         clearInterval(interval);
 
