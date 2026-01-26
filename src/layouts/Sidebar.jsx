@@ -1,10 +1,10 @@
 import { NavLink } from "react-router-dom";
-import { XMarkIcon, HomeIcon, UsersIcon, DocumentIcon,ClockIcon,InformationCircleIcon  } from "@heroicons/react/24/outline";
+import { XMarkIcon, HomeIcon, UsersIcon,UserIcon, DocumentIcon,ClockIcon,InformationCircleIcon  } from "@heroicons/react/24/outline";
 
 export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
   const links = [
     { to: "/home", name: "Home", icon: HomeIcon },
-     { to: "/profile", name: "Profile", icon: HomeIcon },
+     { to: "/profile", name: "Profile", icon: UserIcon },
     { to: "/site", name: "Site Statistics", icon: UsersIcon },
     { to: "/reports", name: "Reports", icon:  DocumentIcon },
     { to: "/about", name: "About", icon:  InformationCircleIcon }
