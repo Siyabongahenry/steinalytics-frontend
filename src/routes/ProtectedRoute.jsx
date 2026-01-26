@@ -1,24 +1,33 @@
 // src/auth/ProtectedRoute.jsx
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "react-oidc-context";
 
+export default function ProtectedRoute({ allowedGroups }) {
+  const auth = useAuth();
 
-export default function ProtectedRoute({ children }) {
-  const { isLoading, isAuthenticated } = useAuth();
-
-  // Show a loading indicator while auth state is initializing
-  if (isLoading) return (
-        <div>
-            {/* Gradient Spinner */}
-            <div className="w-16 h-16 border-4 border-t-transparent border-b-transparent border-l-blue-500 border-r-purple-500 rounded-full animate-spin mb-4"></div>
-            {/* Pulsing Loading Text */}
+  if (auth.isLoading) {
+    return (
+      <div className="h-screen flex flex-col items-center justify-center">
+        <div className="w-16 h-16 border-4 border-t-transparent border-b-transparent border-l-blue-500 border-r-purple-500 rounded-full animate-spin mb-4" />
         <p className="text-xl font-semibold animate-pulse">Loading...</p>
-    
-        </div>);
+      </div>
+    );
+  }
 
-  // Redirect to login if not authenticated
-  if (!isAuthenticated) return <Navigate to="/login" />;
+  // Not logged in
+  if (!auth.isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
 
-  // Render the protected page if logged in
-  return children;
+  const userGroups = auth.user?.profile?.["cognito:groups"] || [];
+
+  // Logged in but wrong group
+  if (
+    allowedGroups &&
+    !allowedGroups.some(group => userGroups.includes(group))
+  ) {
+    return <Navigate to="/home" replace />; // or /unauthorized
+  }
+
+  return <Outlet />;
 }
