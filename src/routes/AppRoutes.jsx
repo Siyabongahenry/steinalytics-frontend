@@ -12,7 +12,7 @@ const SitesPage = lazy(() => import("../pages/SitesPage"));
 const ReportPage = lazy(() => import("../features/reports/ReportPage"));
 const ProfilePage = lazy(() => import("../features/profile/ProfilePage.jsx"));
 const LibraryPage = lazy(() => import("../features/library/LibraryPage.jsx"));
-
+const EmailOrganizer = lazy(() => import("../features/emailOrganizer/EmailOrganizerPage.jsx"));
 const HoursCalculatorPage = lazy(() =>
   import("../features/hoursCalculator/HoursCalculatorPage")
 );
@@ -43,6 +43,7 @@ export default function AppRoutes() {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/library" element={<LibraryPage />} />
+        <Route path="/email-organizer" element={<EmailOrganizer />} />
         <Route path="/callback" element={<CallbackPage />} />
 
         {/* Protected routes */}
