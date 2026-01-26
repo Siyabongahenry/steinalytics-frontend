@@ -1,26 +1,37 @@
+// src/pages/ProfilePage.jsx
 import { useEffect, useState, useMemo } from "react";
-import { getUserReports, deleteUserReport } from "./services/UserReportService";
+import { useAuth } from "react-oidc-context";
+import {
+  createAuthAxios,
+  getUserReports,
+  deleteUserReport,
+} from "./services/UserReportService";
 import { formatDistanceToNowStrict, parseISO } from "date-fns";
 import { FaTrash, FaDownload, FaChartBar } from "react-icons/fa";
 import Toast from "../../components/Toast";
 
 export default function ProfilePage() {
+  const auth = useAuth();
   const [reports, setReports] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState(null);
   const [toast, setToast] = useState(null);
-
-  // Selected reports for comparison
   const [selectedReports, setSelectedReports] = useState([]);
 
   const showToast = (message, type = "error") => setToast({ message, type });
+
+  // Memoized Axios instance with token
+  const authAxios = useMemo(
+    () => createAuthAxios(auth.user?.access_token),
+    [auth.user]
+  );
 
   useEffect(() => {
     const fetchReports = async () => {
       setLoading(true);
       try {
-        const data = await getUserReports();
+        const data = await getUserReports(authAxios);
         setReports(data);
       } catch (err) {
         showToast(err.message || "Failed to load reports");
@@ -29,15 +40,17 @@ export default function ProfilePage() {
       }
     };
 
-    fetchReports();
-  }, []);
+    if (auth.user) {
+      fetchReports();
+    }
+  }, [authAxios, auth.user]);
 
   const handleDelete = async (reportId) => {
     if (!window.confirm("Are you sure you want to delete this report?")) return;
 
     setDeletingId(reportId);
     try {
-      await deleteUserReport(reportId);
+      await deleteUserReport(authAxios, reportId);
       setReports((prev) => prev.filter((r) => r.id !== reportId));
       showToast("Report deleted successfully!", "success");
     } catch (err) {
@@ -68,7 +81,6 @@ export default function ProfilePage() {
       showToast("Select at least 2 reports to compare", "error");
       return;
     }
-    // Implement your comparison logic here
     console.log("Compare reports:", selectedReports);
     showToast("Comparison feature not implemented yet", "success");
   };
@@ -143,7 +155,10 @@ export default function ProfilePage() {
                     <td className="px-4 py-2">
                       <button
                         onClick={() =>
-                          showToast("Insights feature not implemented yet", "success")
+                          showToast(
+                            "Insights feature not implemented yet",
+                            "success"
+                          )
                         }
                         className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 px-3 py-1 rounded-md transition"
                       >
