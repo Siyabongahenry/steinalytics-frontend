@@ -67,21 +67,21 @@ export default function RecipientsTable({ recipients, setRecipients }) {
   };
 
   return (
-    <div className="card email-card mb-4">
-      <div className="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
-        <h5 className="mb-0">Recipients Table</h5>
-        <div className="d-flex flex-wrap gap-2">
-          <button className="btn btn-success btn-sm btn-rounded" onClick={addRow}>
+    <div className="bg-gray-800 text-gray-100 rounded-lg shadow-md p-4">
+      <div className="flex flex-wrap justify-between items-center mb-4">
+        <h5 className="text-lg font-semibold">Recipients Table</h5>
+        <div className="flex flex-wrap gap-2">
+          <button className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-md text-sm" onClick={addRow}>
             + Add Recipient
           </button>
           {selected.length > 0 && (
-            <button className="btn btn-danger btn-sm btn-rounded" onClick={bulkRemove}>
+            <button className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm" onClick={bulkRemove}>
               Remove Selected ({selected.length})
             </button>
           )}
           <input
             type="text"
-            className="form-control form-control-sm rounded-pill"
+            className="bg-gray-700 text-gray-200 border border-gray-600 rounded-full px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="🔍 Search..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -90,39 +90,39 @@ export default function RecipientsTable({ recipients, setRecipients }) {
         </div>
       </div>
 
-      <div className="card-body p-0">
-        <table className="table table-hover align-middle email-table mb-0">
-          <thead className="table-light">
+      <div className="p-0">
+        <table className="w-full text-sm text-left border-collapse">
+          <thead className="bg-gray-800 text-gray-300">
             <tr>
-              <th style={{ width: "5%" }}>
+              <th className="p-2 w-[5%]">
                 <input
                   type="checkbox"
                   checked={selected.length === filtered.length && filtered.length > 0}
                   onChange={toggleSelectAll}
                 />
               </th>
-              <th style={{ width: "20%" }}>First Name</th>
-              <th style={{ width: "20%" }}>Last Name</th>
-              <th style={{ width: "30%" }}>Email Address</th>
-              <th style={{ width: "15%" }}>Type</th>
-              <th style={{ width: "10%" }}></th>
+              <th className="p-2 w-[20%]">First Name</th>
+              <th className="p-2 w-[20%]">Last Name</th>
+              <th className="p-2 w-[30%]">Email Address</th>
+              <th className="p-2 w-[15%]">Type</th>
+              <th className="p-2 w-[10%]"></th>
             </tr>
           </thead>
           <tbody>
             {filtered.length === 0 && (
               <tr>
-                <td colSpan="6" className="text-muted text-center">
+                <td colSpan="6" className="text-center text-gray-500 py-4">
                   No recipients found
                 </td>
               </tr>
             )}
             {filtered.map((r, i) =>
               editIndex === i ? (
-                <tr key={i}>
+                <tr key={i} className="bg-gray-800">
                   <td></td>
                   <td>
                     <input
-                      className="form-control form-control-sm"
+                      className="bg-gray-700 text-gray-200 px-2 py-1 rounded w-full"
                       placeholder="Enter first name"
                       value={editRow.name}
                       onChange={(e) => setEditRow({ ...editRow, name: e.target.value })}
@@ -130,17 +130,15 @@ export default function RecipientsTable({ recipients, setRecipients }) {
                   </td>
                   <td>
                     <input
-                      className="form-control form-control-sm"
+                      className="bg-gray-700 text-gray-200 px-2 py-1 rounded w-full"
                       placeholder="Enter surname"
                       value={editRow.surname}
-                      onChange={(e) =>
-                        setEditRow({ ...editRow, surname: e.target.value })
-                      }
+                      onChange={(e) => setEditRow({ ...editRow, surname: e.target.value })}
                     />
                   </td>
                   <td>
                     <input
-                      className="form-control form-control-sm"
+                      className="bg-gray-700 text-gray-200 px-2 py-1 rounded w-full"
                       placeholder="Enter email address"
                       value={editRow.email}
                       onChange={(e) =>
@@ -150,7 +148,7 @@ export default function RecipientsTable({ recipients, setRecipients }) {
                   </td>
                   <td>
                     <select
-                      className="form-select form-select-sm"
+                      className="bg-gray-700 text-gray-200 px-2 py-1 rounded w-full"
                       value={editRow.type || "to"}
                       onChange={(e) => setEditRow({ ...editRow, type: e.target.value })}
                     >
@@ -158,12 +156,15 @@ export default function RecipientsTable({ recipients, setRecipients }) {
                       <option value="cc">CC</option>
                     </select>
                   </td>
-                  <td>
-                    <button className="btn btn-success btn-sm btn-rounded me-2" onClick={saveEdit}>
+                  <td className="flex gap-2">
+                    <button
+                      className="bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded text-xs"
+                      onClick={saveEdit}
+                    >
                       Save
                     </button>
                     <button
-                      className="btn btn-secondary btn-sm btn-rounded"
+                      className="bg-gray-600 hover:bg-gray-700 text-white px-2 py-1 rounded text-xs"
                       onClick={() => setEditIndex(null)}
                     >
                       Cancel
@@ -171,34 +172,40 @@ export default function RecipientsTable({ recipients, setRecipients }) {
                   </td>
                 </tr>
               ) : (
-                <tr key={i}>
-                  <td>
+                <tr key={i} className="hover:bg-gray-800">
+                  <td className="p-2">
                     <input
                       type="checkbox"
                       checked={selected.includes(r.email)}
                       onChange={() => toggleSelect(r.email)}
                     />
                   </td>
-                  <td>{r.name}</td>
-                  <td>{r.surname}</td>
-                  <td>{r.email}</td>
-                  <td>
-                    <span className={`badge ${r.type === "cc" ? "bg-secondary" : "bg-success"}`}>
+                  <td className="p-2">{r.name}</td>
+                  <td className="p-2">{r.surname}</td>
+                  <td className="p-2">{r.email}</td>
+                  <td className="p-2">
+                    <span
+                      className={`px-2 py-1 rounded text-xs ${
+                        r.type === "cc"
+                          ? "bg-gray-600 text-gray-100"
+                          : "bg-green-600 text-white"
+                      }`}
+                    >
                       {r.type?.toUpperCase() || "TO"}
                     </span>
                   </td>
-                  <td>
+                  <td className="p-2 flex gap-2">
                     <button
-                      className="btn btn-outline-primary btn-sm btn-rounded me-2"
+                      className="border border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white px-2 py-1 rounded text-xs"
                       onClick={() => startEdit(i)}
                     >
-                      <i className="fas fa-pen"></i>
+                      ✏️
                     </button>
                     <button
-                      className="btn btn-outline-danger btn-sm btn-rounded"
+                      className="border border-red-500 text-red-500 hover:bg-red-500 hover:text-white px-2 py-1 rounded text-xs"
                       onClick={() => setDeleteCandidate(r)}
                     >
-                      <i className="fas fa-trash"></i>
+                      🗑️
                     </button>
                   </td>
                 </tr>
@@ -207,6 +214,7 @@ export default function RecipientsTable({ recipients, setRecipients }) {
           </tbody>
         </table>
       </div>
+
 
       <div className="card-footer text-muted small d-flex justify-content-between">
         <span>Total recipients: <strong>{recipients.length}</strong></span>

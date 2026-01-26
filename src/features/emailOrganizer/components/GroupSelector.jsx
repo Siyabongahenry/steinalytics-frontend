@@ -13,7 +13,7 @@ export default function GroupSelector({ onGroupSelect }) {
     async function loadGroups() {
       setLoading(true);
       try {
-        const data = await listGroups();
+        const data =[] //await listGroups();
         setGroups(data);
       } catch (err) {
         console.error("Failed to fetch groups:", err);
