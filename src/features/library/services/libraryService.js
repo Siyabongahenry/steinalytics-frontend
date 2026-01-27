@@ -43,7 +43,7 @@ const api = axios.create({
 // --------------------
 // Shared Functions
 // --------------------
-export async function getBooks({ query = "", filters = {}, page = 1 }) {
+export async function getBooks({ query = "", filters = {}, page = 1 }, access_token) {
   if (USE_MOCK) {
     let results = mockBooks.filter((b) =>
       b.title.toLowerCase().includes(query.toLowerCase())
@@ -60,12 +60,13 @@ export async function getBooks({ query = "", filters = {}, page = 1 }) {
   } else {
     const response = await api.get("/books", {
       params: { search: query, language: filters.language, category: filters.category, page },
+      headers: { Authorization: `Bearer ${access_token}` },
     });
     return response.data;
   }
 }
 
-export async function borrowBook(bookId) {
+export async function borrowBook(bookId, access_token) {
   if (USE_MOCK) {
     const book = mockBooks.find((b) => b.id === bookId);
     if (book && book.available) {
@@ -75,12 +76,14 @@ export async function borrowBook(bookId) {
     }
     return book;
   } else {
-    const response = await api.post(`/borrow/${bookId}`);
+    const response = await api.post(`/borrow/${bookId}`, {}, {
+      headers: { Authorization: `Bearer ${access_token}` },
+    });
     return response.data;
   }
 }
 
-export async function donateBook(newBook) {
+export async function donateBook(newBook, access_token) {
   if (USE_MOCK) {
     const donated = {
       id: Date.now(),
@@ -93,30 +96,35 @@ export async function donateBook(newBook) {
     mockBooks.push(donated);
     return donated;
   } else {
-    const response = await api.post("/donate", newBook);
+    const response = await api.post("/donate", newBook, {
+      headers: { Authorization: `Bearer ${access_token}` },
+    });
     return response.data;
   }
 }
 
-export async function getMostBorrowed() {
+export async function getMostBorrowed(access_token) {
   if (USE_MOCK) {
     return [...mockBooks]
       .sort((a, b) => b.borrowCount - a.borrowCount)
       .slice(0, 3);
   } else {
-    const response = await api.get("/most-borrowed");
+    const response = await api.get("/most-borrowed", {
+      headers: { Authorization: `Bearer ${access_token}` },
+    });
     return response.data;
   }
 }
 
-
-
-export const uploadPicture = async (file) => {
+export const uploadPicture = async (file, access_token) => {
   const formData = new FormData();
   formData.append("picture", file);
 
   const response = await axios.post(`${API_BASE}/books/identify`, formData, {
-    headers: { "Content-Type": "multipart/form-data" },
+    headers: {
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${access_token}`,
+    },
   });
 
   return response.data;

@@ -3,8 +3,12 @@ import { useDropzone } from "react-dropzone";
 import { uploadPicture } from "../services/libraryService";
 import toast, { Toaster } from "react-hot-toast";
 import { CpuChipIcon } from "@heroicons/react/24/outline"; // Heroicon for AI/robot
+import { useAuth } from "react-oidc-context";
 
 export default function DonationForm({ onDonate }) {
+
+  const auth = useAuth();
+
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [language, setLanguage] = useState("");
@@ -22,7 +26,7 @@ export default function DonationForm({ onDonate }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onDonate({ title, author, language, category, isbn, picture });
+    onDonate({ title, author, language, category, isbn, picture }, auth.user?.access_token);
     toast.success("Book donated successfully!");
     setTitle("");
     setAuthor("");
@@ -35,7 +39,7 @@ export default function DonationForm({ onDonate }) {
   const handleIdentifyBook = async () => {
     if (!picture) return toast.error("Please upload a picture first!");
     try {
-      const response = await uploadPicture(picture);
+      const response = await uploadPicture(picture, auth.user?.access_token);
       toast.success("🤖 Book details identified!");
       console.log("Backend response:", response);
       // Optionally auto-fill fields if backend returns title/author/isbn
