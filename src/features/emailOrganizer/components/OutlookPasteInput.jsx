@@ -13,6 +13,8 @@ export default function OutlookPasteInput({ recipients, setRecipients }) {
 
   const toRef = useRef(null);
   const ccRef = useRef(null);
+  const toChipsRef = useRef(null);
+  const ccChipsRef = useRef(null);
 
   useEffect(() => {
     if (toRef.current) {

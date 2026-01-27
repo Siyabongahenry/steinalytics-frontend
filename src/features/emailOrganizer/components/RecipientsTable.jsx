@@ -225,28 +225,40 @@ export default function RecipientsTable({ recipients, setRecipients }) {
 
       {/* Delete Confirmation Modal */}
       {deleteCandidate && (
-        <div className="modal fade show email-modal" style={{ display: "block" }}>
-          <div className="modal-dialog">
-            <div className="modal-content rounded-3 shadow">
-              <div className="modal-header border-0">
-                <h5 className="modal-title text-danger">Confirm Deletion</h5>
-                <button type="button" className="btn-close" onClick={() => setDeleteCandidate(null)}></button>
-              </div>
-              <div className="modal-body">
-                Remove <strong>{deleteCandidate.email}</strong> from this group?
-              </div>
-              <div className="modal-footer border-0">
-                <button className="btn btn-secondary btn-rounded" onClick={() => setDeleteCandidate(null)}>
-                  Cancel
-                </button>
-                <button className="btn btn-danger btn-rounded" onClick={confirmRemove}>
-                  Delete
-                </button>
-              </div>
+        
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-gray-800 rounded-lg shadow-lg w-full max-w-md">
+            <div className="flex justify-between items-center border-b border-gray-700 px-4 py-2">
+              <h5 className="text-red-500 font-semibold">Confirm Deletion</h5>
+              <button
+                type="button"
+                className="text-gray-400 hover:text-gray-200"
+                onClick={() => setDeleteCandidate(null)}
+              >
+                ✕
+              </button>
+            </div>
+            <div className="px-4 py-3 text-gray-200">
+              Remove <strong>{deleteCandidate.email}</strong> from this group?
+            </div>
+            <div className="flex justify-end gap-2 border-t border-gray-700 px-4 py-2">
+              <button
+                className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded-md text-sm"
+                onClick={() => setDeleteCandidate(null)}
+              >
+                Cancel
+              </button>
+              <button
+                className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm"
+                onClick={confirmRemove}
+              >
+                Delete
+              </button>
             </div>
           </div>
         </div>
       )}
+
 
       <Alert />
     </div>

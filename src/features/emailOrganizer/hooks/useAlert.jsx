@@ -12,19 +12,28 @@ export function useAlert() {
 
   const Alert = () =>
     msg ? (
-      <div className="toast-container position-fixed bottom-0 end-0 p-3">
+      <div className="fixed bottom-4 right-4 z-50">
         <div
-          className={`toast align-items-center text-bg-${type} border-0 show shadow`}
+          className={`flex items-center justify-between px-4 py-3 rounded shadow-lg text-sm font-medium
+            ${
+              type === "success"
+                ? "bg-green-600 text-white"
+                : type === "error"
+                ? "bg-red-600 text-white"
+                : type === "warning"
+                ? "bg-yellow-500 text-black"
+                : "bg-blue-600 text-white"
+            }`}
           role="alert"
         >
-          <div className="d-flex">
-            <div className="toast-body">{msg}</div>
-            <button
-              type="button"
-              className="btn-close btn-close-white me-2 m-auto"
-              onClick={() => setMsg(null)}
-            ></button>
-          </div>
+          <span>{msg}</span>
+          <button
+            type="button"
+            className="ml-3 text-white hover:text-gray-200 focus:outline-none"
+            onClick={() => setMsg(null)}
+          >
+            ✕
+          </button>
         </div>
       </div>
     ) : null;
