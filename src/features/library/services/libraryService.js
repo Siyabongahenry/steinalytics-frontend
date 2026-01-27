@@ -116,15 +116,23 @@ export async function getMostBorrowed(access_token) {
   }
 }
 
-export const uploadPicture = async (file, access_token) => {
+export const uploadPicture = (file, access_token, onProgress) => {
   const formData = new FormData();
   formData.append("file", file);
 
-  const response = await axios.post(`${API_BASE}/books/identify`, formData, {
+  return axios.post(`${API_BASE}/books/identify`, formData, {
     headers: {
       Authorization: `Bearer ${access_token}`,
     },
-  });
+    onUploadProgress: (progressEvent) => {
+      if (!progressEvent.total || !onProgress) return;
 
-  return response.data;
+      const percent = Math.round(
+        (progressEvent.loaded * 100) / progressEvent.total
+      );
+
+      onProgress(percent);
+    },
+  });
 };
+
