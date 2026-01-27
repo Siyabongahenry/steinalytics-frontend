@@ -43,6 +43,5 @@ jobs:
       - name: copy dist to bucket
         run: |
           aws s3 sync ./dist s3://${{ secrets.S3_BUCKET }} --delete
-          --exact-timestamps \
 
      
