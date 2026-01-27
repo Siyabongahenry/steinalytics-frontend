@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { listGroups, getGroup, exitGroup } from "../services/organizerService";
+import { getGroup, exitGroup } from "../services/organizerService";
 import { useAlert } from "../hooks/useAlert";
 
 export default function GroupSelector({ onGroupSelect }) {
