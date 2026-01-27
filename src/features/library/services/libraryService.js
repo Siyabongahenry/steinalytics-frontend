@@ -12,7 +12,7 @@ let mockBooks = [
     id: 1,
     title: "Zulu Folktales",
     author: "Author A",
-    cover: "/covers/zulu.jpg",
+    cover: "/books/book1.jpg",
     available: true,
     returnDate: null,
     borrowCount: 5,
@@ -23,7 +23,7 @@ let mockBooks = [
     id: 2,
     title: "Afrikaans Poetry",
     author: "Author B",
-    cover: "/covers/afrikaans.jpg",
+    cover: "/books/million.webp",
     available: false,
     returnDate: "2026-02-01",
     borrowCount: 12,
@@ -108,3 +108,16 @@ export async function getMostBorrowed() {
     return response.data;
   }
 }
+
+
+
+export const uploadPicture = async (file) => {
+  const formData = new FormData();
+  formData.append("picture", file);
+
+  const response = await axios.post(`${API_BASE}/books/identify`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+
+  return response.data;
+};

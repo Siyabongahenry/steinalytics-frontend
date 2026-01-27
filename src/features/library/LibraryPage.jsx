@@ -1,49 +1,58 @@
 import { useEffect, useState } from "react";
-import { getBooks, borrowBook, donateBook, getMostBorrowed } from "./services/libraryApi";
+import {
+  getBooks,
+  borrowBook,
+  donateBook,
+} from "./services/libraryService";
 import BookCard from "./components/BookCard";
 import SearchBar from "./components/SearchBar";
 import FilterPanel from "./components/FilterPanel";
-import Pagination from "./components/Pagination";
 import DonationForm from "./components/DonationForm";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 export default function LibraryPage() {
   const [books, setBooks] = useState([]);
   const [query, setQuery] = useState("");
   const [filters, setFilters] = useState({});
   const [page, setPage] = useState(1);
-  const [mostBorrowed, setMostBorrowed] = useState([]);
+  const [hasMore, setHasMore] = useState(true);
+  const [showDonate, setShowDonate] = useState(false);
 
+  // Load initial books
   useEffect(() => {
-    getBooks({ query, filters, page }).then(setBooks);
-    getMostBorrowed().then(setMostBorrowed);
+    getBooks({ query, filters, page }).then((data) => {
+      setBooks(data);
+      setHasMore(data.length > 0);
+    });
   }, [query, filters, page]);
+
+  const fetchMoreBooks = async () => {
+    const nextPage = page + 1;
+    const newBooks = await getBooks({ query, filters, page: nextPage });
+    if (newBooks.length === 0) {
+      setHasMore(false);
+    } else {
+      setBooks((prev) => [...prev, ...newBooks]);
+      setPage(nextPage);
+    }
+  };
 
   const handleBorrow = async (bookId) => {
     const updated = await borrowBook(bookId);
     setBooks((prev) =>
       prev.map((b) => (b.id === updated.id ? updated : b))
     );
-    getMostBorrowed().then(setMostBorrowed);
   };
 
   const handleDonate = async (newBook) => {
     const donated = await donateBook(newBook);
-    setBooks((prev) => [...prev, donated]);
+    setBooks((prev) => [donated, ...prev]);
+    setShowDonate(false); // close modal after donating
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100 p-6">
+    <div className="min-h-screen bg-gray-900 text-gray-100 p-6 relative">
       <h1 className="text-3xl font-bold mb-6">📚 Library</h1>
-
-      {/* Most Borrowed Section */}
-      <section className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">⭐ Most Borrowed Books</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {mostBorrowed.map((book) => (
-            <BookCard key={book.id} book={book} onBorrow={handleBorrow} />
-          ))}
-        </div>
-      </section>
 
       <div className="flex flex-col md:flex-row gap-6">
         {/* Sidebar Filters */}
@@ -55,24 +64,49 @@ export default function LibraryPage() {
         <main className="flex-1">
           <SearchBar onSearch={setQuery} />
 
-          {/* Book Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
-            {books.map((book) => (
-              <BookCard key={book.id} book={book} onBorrow={handleBorrow} />
-            ))}
-          </div>
-
-          {/* Pagination */}
-          <div className="mt-6 flex justify-center">
-            <Pagination currentPage={page} onPageChange={setPage} />
-          </div>
-
-          {/* Donation Form */}
-          <div className="mt-10">
-            <DonationForm onDonate={handleDonate} />
-          </div>
+          {/* Infinite Scroll Book Grid */}
+          <InfiniteScroll
+            dataLength={books.length}
+            next={fetchMoreBooks}
+            hasMore={hasMore}
+            loader={<p className="text-center text-gray-400 mt-4">Loading more books...</p>}
+            endMessage={
+              <p className="text-center text-gray-500 mt-4">
+                🎉 You’ve reached the end of the library!
+              </p>
+            }
+          >
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mt-4">
+              {books.map((book) => (
+                <BookCard key={book.id} book={book} onBorrow={handleBorrow} />
+              ))}
+            </div>
+          </InfiniteScroll>
         </main>
       </div>
+
+      {/* Floating Donate Button */}
+      <button
+        onClick={() => setShowDonate(true)}
+        className="fixed bottom-6 right-6 bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-full shadow-lg"
+      >
+        + Donate
+      </button>
+
+      {/* Donation Modal */}
+      {showDonate && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md">
+            <DonationForm onDonate={handleDonate} />
+            <button
+              onClick={() => setShowDonate(false)}
+              className="mt-4 w-full bg-red-600 hover:bg-red-500 text-white py-2 rounded"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
