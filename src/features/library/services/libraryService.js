@@ -118,11 +118,10 @@ export async function getMostBorrowed(access_token) {
 
 export const uploadPicture = async (file, access_token) => {
   const formData = new FormData();
-  formData.append("picture", file);
+  formData.append("file", file);
 
   const response = await axios.post(`${API_BASE}/books/identify`, formData, {
     headers: {
-      "Content-Type": "multipart/form-data",
       Authorization: `Bearer ${access_token}`,
     },
   });
