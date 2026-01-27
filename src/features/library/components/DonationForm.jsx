@@ -1,10 +1,34 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { uploadPicture } from "../services/libraryService";
 import toast, { Toaster } from "react-hot-toast";
 import { CpuChipIcon } from "@heroicons/react/24/outline";
 import { useAuth } from "react-oidc-context";
 
+// --------------------
+// Helpers
+// --------------------
+const SMALL_WORDS = new Set([
+  "and", "or", "the", "of", "in", "on", "at", "for", "to", "with",
+]);
+
+const smartTitleCase = (str = "") =>
+  str
+    .toLowerCase()
+    .split(" ")
+    .map((word, i) =>
+      i !== 0 && SMALL_WORDS.has(word)
+        ? word
+        : word.charAt(0).toUpperCase() + word.slice(1)
+    )
+    .join(" ");
+
+const formatAuthors = (authors = []) =>
+  authors.map((a) => smartTitleCase(a)).join(", ");
+
+// --------------------
+// Component
+// --------------------
 export default function DonationForm({ onDonate }) {
   const auth = useAuth();
 
@@ -14,26 +38,44 @@ export default function DonationForm({ onDonate }) {
   const [category, setCategory] = useState("");
   const [isbn, setIsbn] = useState("");
   const [picture, setPicture] = useState(null);
+  const [preview, setPreview] = useState(null); // ✅ Image preview
 
-  // 🔥 Progress state
+  // AI/Upload States
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
+  const [aiFilled, setAiFilled] = useState({});
+  const [backup, setBackup] = useState(null);
+  const [confidence, setConfidence] = useState(null);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: { "image/*": [] },
     onDrop: (acceptedFiles) => {
-      setPicture(acceptedFiles[0]);
-      toast.success(`Uploaded: ${acceptedFiles[0].name}`);
+      const file = acceptedFiles[0];
+      setPicture(file);
+      toast.success(`Uploaded: ${file.name}`);
+
+      // Generate preview URL
+      const objectUrl = URL.createObjectURL(file);
+      setPreview(objectUrl);
     },
   });
 
+  useEffect(() => {
+    // Cleanup preview URL
+    return () => {
+      if (preview) URL.revokeObjectURL(preview);
+    };
+  }, [preview]);
+
+  // --------------------
+  // Handlers
+  // --------------------
   const handleSubmit = (e) => {
     e.preventDefault();
     onDonate(
       { title, author, language, category, isbn, picture },
       auth.user?.access_token
     );
-
     toast.success("Book donated successfully!");
     setTitle("");
     setAuthor("");
@@ -41,6 +83,10 @@ export default function DonationForm({ onDonate }) {
     setCategory("");
     setIsbn("");
     setPicture(null);
+    setPreview(null);
+    setAiFilled({});
+    setConfidence(null);
+    setBackup(null);
   };
 
   const handleIdentifyBook = async () => {
@@ -56,13 +102,42 @@ export default function DonationForm({ onDonate }) {
         setUploadProgress
       );
 
-      toast.success("🤖 Book details identified!");
-      console.log("Backend response:", response.data);
+      const data = response.data;
+      setConfidence(data.confidence ?? 0);
 
-      // Optional autofill
-      // setTitle(response.data.title || "");
-      // setAuthor(response.data.author || "");
-      // setIsbn(response.data.isbn || "");
+      // Backup current fields for undo
+      setBackup({ title, author, language, category, isbn });
+
+      const filled = {};
+
+      if (data.title) {
+        setTitle(smartTitleCase(data.title));
+        filled.title = true;
+      }
+      if (data.authors?.length) {
+        setAuthor(formatAuthors(data.authors));
+        filled.author = true;
+      }
+      if (data.language) {
+        setLanguage(smartTitleCase(data.language));
+        filled.language = true;
+      }
+      if (data.categories?.length) {
+        setCategory(data.categories[0].toLowerCase());
+        filled.category = true;
+      }
+      if (data.isbn) {
+        setIsbn(data.isbn);
+        filled.isbn = true;
+      }
+
+      setAiFilled(filled);
+
+      toast.success(
+        data.confidence >= 0.75
+          ? "🤖 Book identified with high confidence"
+          : "🤖 Book identified — please verify"
+      );
     } catch (err) {
       console.error(err);
       toast.error("Error identifying book");
@@ -71,6 +146,22 @@ export default function DonationForm({ onDonate }) {
     }
   };
 
+  const undoAIFill = () => {
+    if (backup) {
+      setTitle(backup.title);
+      setAuthor(backup.author);
+      setLanguage(backup.language);
+      setCategory(backup.category);
+      setIsbn(backup.isbn);
+      setAiFilled({});
+      setBackup(null);
+      toast("AI autofill undone");
+    }
+  };
+
+  // --------------------
+  // Render
+  // --------------------
   return (
     <>
       <form
@@ -78,6 +169,17 @@ export default function DonationForm({ onDonate }) {
         className="bg-gray-800 p-6 rounded-lg shadow space-y-4"
       >
         <h2 className="text-xl font-bold text-gray-100">Donate a Book</h2>
+
+        {/* Image Preview */}
+        {preview && (
+          <div className="flex justify-center mb-4">
+            <img
+              src={preview}
+              alt="Book Preview"
+              className="max-h-48 object-contain rounded border border-gray-600"
+            />
+          </div>
+        )}
 
         {/* Drag & Drop */}
         <div
@@ -116,49 +218,74 @@ export default function DonationForm({ onDonate }) {
           type="button"
           onClick={handleIdentifyBook}
           disabled={isUploading}
-          className={`w-full flex items-center justify-center gap-2 py-2 rounded transition-colors
-            ${
-              isUploading
-                ? "bg-gray-500 cursor-not-allowed"
-                : "bg-blue-600 hover:bg-blue-500"
-            }`}
+          className={`w-full flex items-center justify-center gap-2 py-2 rounded transition-colors ${
+            isUploading
+              ? "bg-gray-500 cursor-not-allowed"
+              : "bg-blue-600 hover:bg-blue-500"
+          }`}
         >
           <CpuChipIcon className="w-5 h-5" />
           {isUploading ? "Uploading…" : "AI Identify Book"}
         </button>
 
+        {/* Undo AI autofill */}
+        {backup && (
+          <button
+            type="button"
+            onClick={undoAIFill}
+            className="text-sm text-gray-400 underline text-center w-full"
+          >
+            Undo AI autofill
+          </button>
+        )}
+
+        {/* Confidence warning */}
+        {confidence !== null && confidence < 0.7 && (
+          <p className="text-xs text-yellow-400 text-center">
+            ⚠ Low confidence — please verify details before submitting
+          </p>
+        )}
+
         {/* Inputs */}
         <input
           type="text"
-          placeholder="Book Title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full bg-gray-700 text-gray-100 rounded px-3 py-2"
+          placeholder="Book Title"
+          className={`w-full rounded px-3 py-2 bg-gray-700 text-gray-100 ${
+            aiFilled.title ? "ring-2 ring-blue-500" : ""
+          }`}
           required
         />
 
         <input
           type="text"
-          placeholder="Author"
           value={author}
           onChange={(e) => setAuthor(e.target.value)}
-          className="w-full bg-gray-700 text-gray-100 rounded px-3 py-2"
+          placeholder="Author"
+          className={`w-full rounded px-3 py-2 bg-gray-700 text-gray-100 ${
+            aiFilled.author ? "ring-2 ring-blue-500" : ""
+          }`}
           required
         />
 
         <input
           type="text"
-          placeholder="ISBN"
           value={isbn}
           onChange={(e) => setIsbn(e.target.value)}
-          className="w-full bg-gray-700 text-gray-100 rounded px-3 py-2"
+          placeholder="ISBN"
+          className={`w-full rounded px-3 py-2 bg-gray-700 text-gray-100 ${
+            aiFilled.isbn ? "ring-2 ring-blue-500" : ""
+          }`}
           required
         />
 
         <select
           value={language}
           onChange={(e) => setLanguage(e.target.value)}
-          className="w-full bg-gray-700 text-gray-100 rounded px-3 py-2"
+          className={`w-full rounded px-3 py-2 bg-gray-700 text-gray-100 ${
+            aiFilled.language ? "ring-2 ring-blue-500" : ""
+          }`}
           required
         >
           <option value="">Select Language</option>
@@ -172,7 +299,9 @@ export default function DonationForm({ onDonate }) {
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          className="w-full bg-gray-700 text-gray-100 rounded px-3 py-2"
+          className={`w-full rounded px-3 py-2 bg-gray-700 text-gray-100 ${
+            aiFilled.category ? "ring-2 ring-blue-500" : ""
+          }`}
           required
         >
           <option value="">Select Category</option>
@@ -182,6 +311,7 @@ export default function DonationForm({ onDonate }) {
           <option value="history">History</option>
         </select>
 
+        {/* Submit */}
         <button
           type="submit"
           className="w-full bg-green-600 hover:bg-green-500 text-white py-2 rounded"
