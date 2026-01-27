@@ -6,8 +6,8 @@ on:
       - main
 
 permissions: 
-  id-token: write
-  contents: read
+    id-token: write
+    contents: read
 
 jobs:
   deploy:
@@ -40,15 +40,9 @@ jobs:
           role-to-assume: ${{ secrets.DEPLOY_ROLE_ARN }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Upload dist to S3 with MIME detection
+      - name: copy dist to bucket
         run: |
-          aws s3 sync ./dist s3://${{ secrets.S3_BUCKET }} \
-            --delete \
-            --exact-timestamps \
-            --guess-mime-type
+          aws s3 sync ./dist s3://${{ secrets.S3_BUCKET }} --delete
+          --exact-timestamps \
 
-      - name: Invalidate CloudFront cache
-        run: |
-          aws cloudfront create-invalidation \
-            --distribution-id ${{ secrets.CLOUDFRONT_DIST_ID }} \
-            --paths "/*"
+     
