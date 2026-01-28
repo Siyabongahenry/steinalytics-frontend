@@ -51,7 +51,7 @@ export const uploadFile = async (file, access_token) => {
   const formData = new FormData();
   formData.append("file", file); // 👈 use "file"
 
-  const response = await api.post("/books/identify", formData, {
+  const response = await api.post("/books-identifier/identify", formData, {
     headers: {
       "Content-Type": "multipart/form-data",
       Authorization: `Bearer ${access_token}`,
