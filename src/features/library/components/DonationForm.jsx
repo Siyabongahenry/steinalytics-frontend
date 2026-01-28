@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { uploadPicture } from "../services/libraryService";
+import { donateBook, uploadFile } from "../services/libraryService";
 import toast, { Toaster } from "react-hot-toast";
-import { CpuChipIcon } from "@heroicons/react/24/outline"; // Heroicon for AI/robot
+import { CpuChipIcon } from "@heroicons/react/24/outline";
 import { useAuth } from "react-oidc-context";
 
 export default function DonationForm({ onDonate }) {
-
   const auth = useAuth();
 
   const [title, setTitle] = useState("");
@@ -14,35 +13,47 @@ export default function DonationForm({ onDonate }) {
   const [language, setLanguage] = useState("");
   const [category, setCategory] = useState("");
   const [isbn, setIsbn] = useState("");
-  const [picture, setPicture] = useState(null);
+  const [file, setFile] = useState(null);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: { "image/*": [] },
     onDrop: (acceptedFiles) => {
-      setPicture(acceptedFiles[0]);
+      setFile(acceptedFiles[0]);
       toast.success(`Uploaded: ${acceptedFiles[0].name}`);
     },
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onDonate({ title, author, language, category, isbn, picture }, auth.user?.access_token);
-    toast.success("Book donated successfully!");
-    setTitle("");
-    setAuthor("");
-    setLanguage("");
-    setCategory("");
-    setIsbn("");
-    setPicture(null);
+    try {
+      const donated = await donateBook(
+        { title, author, language, category, isbn, file },
+        auth.user?.access_token
+      );
+      toast.success("Book donated successfully!");
+      onDonate(donated);
+
+      // Reset form
+      setTitle("");
+      setAuthor("");
+      setLanguage("");
+      setCategory("");
+      setIsbn("");
+      setFile(null);
+    } catch (err) {
+      console.error(err);
+      toast.error("Error donating book");
+    }
   };
 
   const handleIdentifyBook = async () => {
-    if (!picture) return toast.error("Please upload a picture first!");
+    if (!file) return toast.error("Please upload a file first!");
     try {
-      const response = await uploadPicture(picture, auth.user?.access_token);
+      const response = await uploadFile(file, auth.user?.access_token);
       toast.success("🤖 Book details identified!");
       console.log("Backend response:", response);
-      // Optionally auto-fill fields if backend returns title/author/isbn
+
+      // Optionally auto-fill fields
       // setTitle(response.title || "");
       // setAuthor(response.author || "");
       // setIsbn(response.isbn || "");
@@ -60,7 +71,7 @@ export default function DonationForm({ onDonate }) {
       >
         <h2 className="text-xl font-bold text-gray-100">Donate a Book</h2>
 
-        {/* Drag & Drop Zone at the top */}
+        {/* Drag & Drop Zone */}
         <div
           {...getRootProps()}
           className={`border-2 border-dashed rounded p-6 text-center cursor-pointer ${
@@ -68,11 +79,11 @@ export default function DonationForm({ onDonate }) {
           }`}
         >
           <input {...getInputProps()} />
-          {picture ? (
-            <p className="text-green-400">Uploaded: {picture.name}</p>
+          {file ? (
+            <p className="text-green-400">Uploaded: {file.name}</p>
           ) : (
             <p className="text-gray-300">
-              Drag & drop a picture here, or click to select
+              Drag & drop a file here, or click to select
             </p>
           )}
         </div>
@@ -87,7 +98,7 @@ export default function DonationForm({ onDonate }) {
           AI Identify Book
         </button>
 
-        {/* Book Title */}
+        {/* Title */}
         <input
           type="text"
           placeholder="Book Title"
@@ -146,7 +157,7 @@ export default function DonationForm({ onDonate }) {
           <option value="history">History</option>
         </select>
 
-        {/* Submit Donation */}
+        {/* Submit */}
         <button
           type="submit"
           className="w-full bg-green-600 hover:bg-green-500 text-white py-2 rounded transition-colors"
