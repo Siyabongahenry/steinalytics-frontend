@@ -34,7 +34,7 @@ export async function donateBook(newBook, access_token) {
       formData.append("file", newBook.file); // 👈 use "file"
     }
 
-    const response = await api.post("/donate", formData, {
+    const response = await api.post("/books/donate", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${access_token}`,
