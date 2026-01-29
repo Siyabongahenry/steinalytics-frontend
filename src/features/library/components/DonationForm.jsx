@@ -5,7 +5,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { CpuChipIcon } from "@heroicons/react/24/outline";
 import { useAuth } from "react-oidc-context";
 
-export default function DonationForm({ onDonate }) {
+export default function DonationForm() {
   const auth = useAuth();
 
   const [title, setTitle] = useState("");
@@ -26,12 +26,11 @@ export default function DonationForm({ onDonate }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const donated = await donateBook(
+      await donateBook(
         { title, author, language, category, isbn, file },
         auth.user?.access_token
       );
-      toast.success("Book donated successfully!");
-      onDonate(donated);
+      toast.success("Book donated successfully! Awaiting approval.");
 
       // Reset form
       setTitle("");
