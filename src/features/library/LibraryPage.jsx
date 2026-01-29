@@ -13,20 +13,38 @@ export default function LibraryPage() {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
+  // Effect only fetches data, no synchronous setState
   useEffect(() => {
     getBooks({ query, filters, page }).then((data) => {
-      setBooks(data);
-      setHasMore(data.length > 0);
+      const booksArray = data?.books ?? [];
+      setBooks((prev) => (page === 1 ? booksArray : [...prev, ...booksArray]));
+      setHasMore(booksArray.length > 0);
     });
   }, [query, filters, page]);
 
+  // Reset page and books when search changes
+  const handleSearch = (newQuery) => {
+    setQuery(newQuery);
+    setPage(1);
+    setBooks([]);
+  };
+
+  // Reset page and books when filters change
+  const handleFilterChange = (newFilters) => {
+    setFilters(newFilters);
+    setPage(1);
+    setBooks([]);
+  };
+
   const fetchMoreBooks = async () => {
     const nextPage = page + 1;
-    const newBooks = await getBooks({ query, filters, page: nextPage });
-    if (newBooks.length === 0) {
+    const data = await getBooks({ query, filters, page: nextPage });
+    const booksArray = data?.books ?? [];
+
+    if (booksArray.length === 0) {
       setHasMore(false);
     } else {
-      setBooks((prev) => [...prev, ...newBooks]);
+      setBooks((prev) => [...prev, ...booksArray]);
       setPage(nextPage);
     }
   };
@@ -38,18 +56,22 @@ export default function LibraryPage() {
       <div className="flex flex-col md:flex-row gap-6">
         {/* Sidebar Filters */}
         <aside className="w-full md:w-1/4 bg-gray-800 rounded-lg p-4 shadow">
-          <FilterPanel onFilterChange={setFilters} />
+          <FilterPanel onFilterChange={handleFilterChange} />
         </aside>
 
         {/* Main Content */}
         <main className="flex-1">
-          <SearchBar onSearch={setQuery} />
+          <SearchBar onSearch={handleSearch} />
 
           <InfiniteScroll
             dataLength={books.length}
             next={fetchMoreBooks}
             hasMore={hasMore}
-            loader={<p className="text-center text-gray-400 mt-4">Loading more books...</p>}
+            loader={
+              <p className="text-center text-gray-400 mt-4">
+                Loading more books...
+              </p>
+            }
             endMessage={
               <p className="text-center text-gray-500 mt-4">
                 🎉 You’ve reached the end of the library!
