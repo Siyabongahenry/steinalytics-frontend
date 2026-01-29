@@ -1,8 +1,11 @@
-export default function BookCard({ book, onBorrow }) {
+export default function BookCard({ book, onBorrow, onDetails }) {
   const isAvailable = book.available;
 
   return (
-    <div className="bg-gray-800 rounded-lg shadow hover:shadow-lg transition-shadow p-3 w-40">
+    <div
+      className="bg-gray-800 rounded-lg shadow hover:shadow-lg transition-shadow p-3 w-40 cursor-pointer"
+      onClick={() => onDetails(book)} // 👈 clicking card opens details modal
+    >
       <div className="overflow-hidden rounded">
         <img
           src={book.cover}
@@ -28,8 +31,10 @@ export default function BookCard({ book, onBorrow }) {
 
       {isAvailable && (
         <button
-          // Instead of borrowing immediately, trigger modal open
-          onClick={() => onBorrow(book)}
+          onClick={(e) => {
+            e.stopPropagation(); // 👈 prevents triggering details modal
+            onBorrow(book);
+          }}
           className="mt-2 w-full bg-blue-600 hover:bg-blue-500 text-white text-xs py-1 rounded"
         >
           Borrow

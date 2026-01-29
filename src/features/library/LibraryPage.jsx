@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-import {
-  getBooks,
-} from "./services/libraryService";
+import { getBooks } from "./services/libraryService";
 import BookCard from "./components/BookCard";
 import SearchBar from "./components/SearchBar";
 import FilterPanel from "./components/FilterPanel";
 import DonationForm from "./components/DonationForm";
-import BorrowForm from "./components/BorrowForm";   // 👈 new component
+import BorrowForm from "./components/BorrowForm";
+import BookDetailsModal from "./components/BookDetailsModal";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 export default function LibraryPage() {
@@ -19,6 +18,9 @@ export default function LibraryPage() {
   const [showDonate, setShowDonate] = useState(false);
   const [showBorrow, setShowBorrow] = useState(false);
   const [selectedBook, setSelectedBook] = useState(null);
+
+  const [showDetails, setShowDetails] = useState(false);
+  const [detailsBook, setDetailsBook] = useState(null);
 
   // Load initial books
   useEffect(() => {
@@ -39,17 +41,22 @@ export default function LibraryPage() {
     }
   };
 
-  // Trigger borrow modal
+  // Borrow modal
   const handleBorrowClick = (book) => {
     setSelectedBook(book);
     setShowBorrow(true);
   };
 
-  // Update book state after successful borrow
   const handleBorrowSuccess = (updatedBook) => {
     setBooks((prev) =>
       prev.map((b) => (b.id === updatedBook.id ? updatedBook : b))
     );
+  };
+
+  // Book details modal
+  const handleShowDetails = (book) => {
+    setDetailsBook(book);
+    setShowDetails(true);
   };
 
   return (
@@ -64,7 +71,6 @@ export default function LibraryPage() {
 
         {/* Main Content */}
         <main className="flex-1">
-        
           <SearchBar onSearch={setQuery} />
 
           {/* Infinite Scroll Book Grid */}
@@ -81,13 +87,18 @@ export default function LibraryPage() {
           >
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mt-4">
               {books.map((book) => (
-                <BookCard key={book.id} book={book} onBorrow={handleBorrowClick} />
+                <BookCard
+                  key={book.id}
+                  book={book}
+                  onBorrow={handleBorrowClick}
+                  onDetails={handleShowDetails}
+                />
               ))}
             </div>
-
           </InfiniteScroll>
         </main>
       </div>
+
       {/* Floating Donate Button */}
       <button
         onClick={() => setShowDonate(true)}
@@ -113,13 +124,20 @@ export default function LibraryPage() {
 
       {/* Borrow Modal */}
       {showBorrow && selectedBook && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <BorrowForm
-            book={selectedBook}
-            onClose={() => setShowBorrow(false)}
-            onBorrowSuccess={handleBorrowSuccess}
-          />
-        </div>
+        <BorrowForm
+          book={selectedBook}
+          onClose={() => setShowBorrow(false)}
+          onBorrowSuccess={handleBorrowSuccess}
+        />
+      )}
+
+      {/* Book Details Modal */}
+      {showDetails && detailsBook && (
+        <BookDetailsModal
+          book={detailsBook}
+          onClose={() => setShowDetails(false)}
+          onBorrow={handleBorrowClick}
+        />
       )}
     </div>
   );

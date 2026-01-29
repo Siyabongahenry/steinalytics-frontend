@@ -1,5 +1,7 @@
-export default function BookDetailsModal({ book, onClose }) {
+export default function BookDetailsModal({ book, onClose, onBorrow }) {
   if (!book) return null;
+
+  const isAvailable = book.available;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -29,7 +31,7 @@ export default function BookDetailsModal({ book, onClose }) {
             </p>
             <p className="mt-1 text-sm text-gray-300">
               <strong>Status:</strong>{" "}
-              {book.available ? (
+              {isAvailable ? (
                 <span className="text-green-400">Available</span>
               ) : (
                 <span className="text-red-400">Borrowed until {book.returnDate}</span>
@@ -41,13 +43,26 @@ export default function BookDetailsModal({ book, onClose }) {
           </div>
         </div>
 
-        {/* Close Button */}
-        <button
-          onClick={onClose}
-          className="mt-6 w-full bg-red-600 hover:bg-red-500 text-white py-2 rounded"
-        >
-          Close
-        </button>
+        {/* Action Buttons */}
+        <div className="mt-6 flex flex-col gap-3">
+          {isAvailable && (
+            <button
+              onClick={() => {
+                onBorrow(book);   // 👈 trigger borrow modal
+                onClose();        // close details modal
+              }}
+              className="w-full bg-blue-600 hover:bg-blue-500 text-white py-2 rounded"
+            >
+              Borrow This Book
+            </button>
+          )}
+          <button
+            onClick={onClose}
+            className="w-full bg-red-600 hover:bg-red-500 text-white py-2 rounded"
+          >
+            Close
+          </button>
+        </div>
       </div>
     </div>
   );
