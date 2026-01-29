@@ -16,9 +16,9 @@ export async function getBooks({ query = "", filters = {}, page = 1 }) {
     // Mock some books
     const mockBooks = Array.from({ length: 10 }, (_, i) => ({
       id: page * 100 + i,
-      title: `Mock Book ${i + 1}`,
+      title: `Book ${i + 1}`,
       author: "Unknown Author",
-      cover: "/covers/default.jpg",
+      cover: "/books/book1.jpg",
       available: true,
       returnDate: null,
       borrowCount: 0,

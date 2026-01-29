@@ -28,7 +28,8 @@ export default function BookCard({ book, onBorrow }) {
 
       {isAvailable && (
         <button
-          onClick={() => onBorrow(book.id)}
+          // Instead of borrowing immediately, trigger modal open
+          onClick={() => onBorrow(book)}
           className="mt-2 w-full bg-blue-600 hover:bg-blue-500 text-white text-xs py-1 rounded"
         >
           Borrow
