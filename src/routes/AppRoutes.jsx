@@ -12,6 +12,9 @@ const SitesPage = lazy(() => import("../pages/SitesPage"));
 const ReportPage = lazy(() => import("../features/reports/ReportPage"));
 const ProfilePage = lazy(() => import("../features/profile/ProfilePage.jsx"));
 const LibraryPage = lazy(() => import("../features/library/LibraryPage.jsx"));
+const BookDetailsPage = lazy(() => import("../features/library/pages/BookDetailsPage.jsx"));
+const BorrowPage = lazy(() => import("../features/library/pages/BorrowPage.jsx"));
+const DonationPage = lazy(() => import("../features/library/pages/DonationPage.jsx"));
 const EmailOrganizer = lazy(() => import("../features/emailOrganizer/EmailOrganizerPage.jsx"));
 const HoursCalculatorPage = lazy(() =>
   import("../features/hoursCalculator/HoursCalculatorPage")
@@ -42,7 +45,13 @@ export default function AppRoutes() {
         <Route path="/register" element={<AuthPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/profile" element={<ProfilePage />} />
+
+        {/* Library feature routes */}
         <Route path="/library" element={<LibraryPage />} />
+        <Route path="/library/books/:id" element={<BookDetailsPage />} />
+        <Route path="/library/books/:id/borrow" element={<BorrowPage />} />
+        <Route path="/library/donate" element={<DonationPage />} />
+
         <Route path="/email-organizer" element={<EmailOrganizer />} />
         <Route path="/callback" element={<CallbackPage />} />
 

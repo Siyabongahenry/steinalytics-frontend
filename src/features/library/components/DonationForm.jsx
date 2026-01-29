@@ -14,12 +14,15 @@ export default function DonationForm() {
   const [category, setCategory] = useState("");
   const [isbn, setIsbn] = useState("");
   const [file, setFile] = useState(null);
+  const [preview, setPreview] = useState(null);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: { "image/*": [] },
     onDrop: (acceptedFiles) => {
-      setFile(acceptedFiles[0]);
-      toast.success(`Uploaded: ${acceptedFiles[0].name}`);
+      const uploaded = acceptedFiles[0];
+      setFile(uploaded);
+      setPreview(URL.createObjectURL(uploaded));
+      toast.success(`Uploaded: ${uploaded.name}`);
     },
   });
 
@@ -39,6 +42,7 @@ export default function DonationForm() {
       setCategory("");
       setIsbn("");
       setFile(null);
+      setPreview(null);
     } catch (err) {
       console.error(err);
       toast.error("Error donating book");
@@ -51,7 +55,6 @@ export default function DonationForm() {
       const response = await uploadFile(file, auth.user?.access_token);
       toast.success("🤖 Book details identified!");
       console.log("Backend response:", response);
-
       // Optionally auto-fill fields
       // setTitle(response.title || "");
       // setAuthor(response.author || "");
@@ -63,108 +66,133 @@ export default function DonationForm() {
   };
 
   return (
-    <>
-      <form
-        onSubmit={handleSubmit}
-        className="bg-gray-800 p-6 rounded-lg shadow space-y-4"
-      >
-        <h2 className="text-xl font-bold text-gray-100">Donate a Book</h2>
+    <div className="bg-gray-800 p-10 rounded-xl shadow-lg w-full">
+      {/* Page Header */}
+      <h1 className="text-3xl font-bold text-center text-gray-100 mb-10">
+        📖 Donate a Book
+      </h1>
 
-        {/* Drag & Drop Zone */}
-        <div
-          {...getRootProps()}
-          className={`border-2 border-dashed rounded p-6 text-center cursor-pointer ${
-            isDragActive ? "border-blue-400 bg-gray-700" : "border-gray-500"
-          }`}
-        >
-          <input {...getInputProps()} />
-          {file ? (
-            <p className="text-green-400">Uploaded: {file.name}</p>
-          ) : (
-            <p className="text-gray-300">
-              Drag & drop a file here, or click to select
-            </p>
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-10">
+        {/* Left column: Upload + AI + Preview */}
+        <div className="space-y-6 flex flex-col justify-start items-center">
+          {/* Drag & Drop Zone */}
+          <div
+            {...getRootProps()}
+            className={`w-full border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
+              isDragActive ? "border-blue-400 bg-gray-700" : "border-gray-600"
+            }`}
+          >
+            <input {...getInputProps()} />
+            {file ? (
+              <p className="text-green-400 font-medium">Uploaded: {file.name}</p>
+            ) : (
+              <p className="text-gray-400">Drag & drop a cover image, or click to select</p>
+            )}
+          </div>
+
+          {/* Preview Thumbnail */}
+          {preview && (
+            <img
+              src={preview}
+              alt="Book cover preview"
+              className="w-40 h-56 object-cover rounded-lg shadow-md"
+            />
           )}
+
+          {/* AI Identify Button */}
+          <button
+            type="button"
+            onClick={handleIdentifyBook}
+            className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-lg text-base font-semibold transition-colors"
+          >
+            <CpuChipIcon className="w-5 h-5" />
+            AI Identify Book
+          </button>
         </div>
 
-        {/* AI Identify Button */}
-        <button
-          type="button"
-          onClick={handleIdentifyBook}
-          className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 text-white py-2 rounded transition-colors"
-        >
-          <CpuChipIcon className="w-5 h-5" />
-          AI Identify Book
-        </button>
+        {/* Right column: Input fields */}
+        <div className="space-y-6">
+          {/* Title */}
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Book Title</label>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="w-full bg-gray-700 text-gray-100 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
 
-        {/* Title */}
-        <input
-          type="text"
-          placeholder="Book Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="w-full bg-gray-700 text-gray-100 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500"
-          required
-        />
+          {/* Author */}
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Author</label>
+            <input
+              type="text"
+              value={author}
+              onChange={(e) => setAuthor(e.target.value)}
+              className="w-full bg-gray-700 text-gray-100 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
 
-        {/* Author */}
-        <input
-          type="text"
-          placeholder="Author"
-          value={author}
-          onChange={(e) => setAuthor(e.target.value)}
-          className="w-full bg-gray-700 text-gray-100 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500"
-          required
-        />
+          {/* ISBN */}
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">ISBN</label>
+            <input
+              type="text"
+              value={isbn}
+              onChange={(e) => setIsbn(e.target.value)}
+              className="w-full bg-gray-700 text-gray-100 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
 
-        {/* ISBN */}
-        <input
-          type="text"
-          placeholder="ISBN"
-          value={isbn}
-          onChange={(e) => setIsbn(e.target.value)}
-          className="w-full bg-gray-700 text-gray-100 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500"
-          required
-        />
+          {/* Language */}
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Language</label>
+            <select
+              value={language}
+              onChange={(e) => setLanguage(e.target.value)}
+              className="w-full bg-gray-700 text-gray-100 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
+              required
+            >
+              <option value="">Select Language</option>
+              <option value="Zulu">Zulu</option>
+              <option value="Xhosa">Xhosa</option>
+              <option value="Afrikaans">Afrikaans</option>
+              <option value="Sesotho">Sesotho</option>
+              <option value="Tswana">Tswana</option>
+            </select>
+          </div>
 
-        {/* Language */}
-        <select
-          value={language}
-          onChange={(e) => setLanguage(e.target.value)}
-          className="w-full bg-gray-700 text-gray-100 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500"
-          required
-        >
-          <option value="">Select Language</option>
-          <option value="Zulu">Zulu</option>
-          <option value="Xhosa">Xhosa</option>
-          <option value="Afrikaans">Afrikaans</option>
-          <option value="Sesotho">Sesotho</option>
-          <option value="Tswana">Tswana</option>
-        </select>
+          {/* Category */}
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Category</label>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full bg-gray-700 text-gray-100 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
+              required
+            >
+              <option value="">Select Category</option>
+              <option value="fiction">Fiction</option>
+              <option value="nonfiction">Non-fiction</option>
+              <option value="fantasy">Fantasy</option>
+              <option value="history">History</option>
+            </select>
+          </div>
 
-        {/* Category */}
-        <select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          className="w-full bg-gray-700 text-gray-100 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500"
-          required
-        >
-          <option value="">Select Category</option>
-          <option value="fiction">Fiction</option>
-          <option value="nonfiction">Non-fiction</option>
-          <option value="fantasy">Fantasy</option>
-          <option value="history">History</option>
-        </select>
-
-        {/* Submit */}
-        <button
-          type="submit"
-          className="w-full bg-green-600 hover:bg-green-500 text-white py-2 rounded transition-colors"
-        >
-          Contribute Book
-        </button>
+          {/* Submit */}
+          <button
+            type="submit"
+            className="w-full bg-green-600 hover:bg-green-500 text-white py-3 rounded-lg text-base font-semibold transition-colors"
+          >
+            Contribute Book
+          </button>
+        </div>
       </form>
       <Toaster position="top-right" />
-    </>
+    </div>
   );
 }

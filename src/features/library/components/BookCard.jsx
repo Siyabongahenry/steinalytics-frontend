@@ -1,21 +1,21 @@
-export default function BookCard({ book, onBorrow, onDetails }) {
+import { Link } from "react-router-dom";
+
+export default function BookCard({ book }) {
   const isAvailable = book.available;
 
   return (
-    <div
-      className="bg-gray-800 rounded-lg shadow hover:shadow-lg transition-shadow p-3 w-40 cursor-pointer"
-      onClick={() => onDetails(book)} // 👈 clicking card opens details modal
-    >
-      <div className="overflow-hidden rounded">
-        <img
-          src={book.cover}
-          alt={book.title}
-          className="w-full aspect-[2/3] object-cover transform transition-transform duration-300 hover:scale-105"
-        />
-      </div>
-
-      <h3 className="text-sm font-semibold mt-2 truncate">{book.title}</h3>
-      <p className="text-xs text-gray-400 truncate">{book.author}</p>
+    <div className="bg-gray-800 rounded-lg shadow hover:shadow-lg transition-shadow p-3 w-40">
+      <Link to={`/library/books/${book.id}`}>
+        <div className="overflow-hidden rounded">
+          <img
+            src={book.cover}
+            alt={book.title}
+            className="w-full aspect-[2/3] object-cover transform transition-transform duration-300 hover:scale-105"
+          />
+        </div>
+        <h3 className="text-sm font-semibold mt-2 truncate">{book.title}</h3>
+        <p className="text-xs text-gray-400 truncate">{book.author}</p>
+      </Link>
 
       <p className="text-xs mt-1">
         {isAvailable ? (
@@ -30,15 +30,12 @@ export default function BookCard({ book, onBorrow, onDetails }) {
       </p>
 
       {isAvailable && (
-        <button
-          onClick={(e) => {
-            e.stopPropagation(); // 👈 prevents triggering details modal
-            onBorrow(book);
-          }}
-          className="mt-2 w-full bg-blue-600 hover:bg-blue-500 text-white text-xs py-1 rounded"
+        <Link
+          to={`/library/books/${book.id}/borrow`}
+          className="mt-2 block w-full bg-blue-600 hover:bg-blue-500 text-white text-xs py-1 rounded text-center"
         >
           Borrow
-        </button>
+        </Link>
       )}
     </div>
   );
