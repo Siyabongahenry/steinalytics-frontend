@@ -9,6 +9,88 @@ const api = axios.create({
 });
 
 // --------------------
+// Get Books (with query, filters, pagination)
+// --------------------
+export async function getBooks({ query = "", filters = {}, page = 1 }) {
+  if (USE_MOCK) {
+    // Mock some books
+    const mockBooks = Array.from({ length: 10 }, (_, i) => ({
+      id: page * 100 + i,
+      title: `Mock Book ${i + 1}`,
+      author: "Unknown Author",
+      cover: "/covers/default.jpg",
+      available: true,
+      returnDate: null,
+      borrowCount: 0,
+      category: filters.category ?? "fiction",
+      language: filters.language ?? "English",
+    }));
+    return mockBooks;
+  } else {
+    const response = await api.get("/books", {
+      params: { query, ...filters, page },
+    });
+    return response.data;
+  }
+}
+
+// --------------------
+// Borrow Book
+// --------------------
+export async function borrowBook(bookId, access_token) {
+  if (USE_MOCK) {
+    return {
+      id: bookId,
+      title: `Mock Book ${bookId}`,
+      author: "Unknown Author",
+      cover: "/covers/default.jpg",
+      available: false,
+      returnDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 1 week later
+      borrowCount: 1,
+    };
+  } else {
+    const response = await api.post(
+      `/books/${bookId}/borrow`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      }
+    );
+    return response.data;
+  }
+}
+
+// --------------------
+// Return Book (optional)
+// --------------------
+export async function returnBook(bookId, access_token) {
+  if (USE_MOCK) {
+    return {
+      id: bookId,
+      title: `Mock Book ${bookId}`,
+      author: "Unknown Author",
+      cover: "/covers/default.jpg",
+      available: true,
+      returnDate: null,
+      borrowCount: 1,
+    };
+  } else {
+    const response = await api.post(
+      `/books/${bookId}/return`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      }
+    );
+    return response.data;
+  }
+}
+
+// --------------------
 // Donate Book (with file)
 // --------------------
 export async function donateBook(newBook, access_token) {
@@ -31,7 +113,7 @@ export async function donateBook(newBook, access_token) {
     formData.append("isbn", newBook.isbn);
 
     if (newBook.file) {
-      formData.append("file", newBook.file); // 👈 use "file"
+      formData.append("file", newBook.file);
     }
 
     const response = await api.post("/books/donate", formData, {
@@ -49,7 +131,7 @@ export async function donateBook(newBook, access_token) {
 // --------------------
 export const uploadFile = async (file, access_token) => {
   const formData = new FormData();
-  formData.append("file", file); // 👈 use "file"
+  formData.append("file", file);
 
   const response = await api.post("/books-identifier/identify", formData, {
     headers: {
