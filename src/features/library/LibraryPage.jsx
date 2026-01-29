@@ -64,6 +64,7 @@ export default function LibraryPage() {
 
         {/* Main Content */}
         <main className="flex-1">
+        
           <SearchBar onSearch={setQuery} />
 
           {/* Infinite Scroll Book Grid */}
@@ -83,10 +84,10 @@ export default function LibraryPage() {
                 <BookCard key={book.id} book={book} onBorrow={handleBorrowClick} />
               ))}
             </div>
+
           </InfiniteScroll>
         </main>
       </div>
-
       {/* Floating Donate Button */}
       <button
         onClick={() => setShowDonate(true)}
