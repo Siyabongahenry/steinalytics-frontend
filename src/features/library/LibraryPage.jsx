@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import {
   getBooks,
   borrowBook,
-  donateBook,
 } from "./services/libraryService";
 import BookCard from "./components/BookCard";
 import SearchBar from "./components/SearchBar";
@@ -42,12 +41,6 @@ export default function LibraryPage() {
     setBooks((prev) =>
       prev.map((b) => (b.id === updated.id ? updated : b))
     );
-  };
-
-  const handleDonate = async (newBook) => {
-    const donated = await donateBook(newBook);
-    setBooks((prev) => [donated, ...prev]);
-    setShowDonate(false); // close modal after donating
   };
 
   return (
@@ -97,7 +90,7 @@ export default function LibraryPage() {
       {showDonate && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md">
-            <DonationForm onDonate={handleDonate} />
+            <DonationForm />
             <button
               onClick={() => setShowDonate(false)}
               className="mt-4 w-full bg-red-600 hover:bg-red-500 text-white py-2 rounded"
