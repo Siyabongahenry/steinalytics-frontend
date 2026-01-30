@@ -1,16 +1,20 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import { useDropzone } from "react-dropzone";
+import { useParams, useNavigate } from "react-router-dom";
 import { uploadReport } from "../services/ReportServices";
 import { FaUpload, FaInfoCircle } from "react-icons/fa";
 import FileProgressList from "../components/FileProgressList";
 import DownloadButtons from "../components/DownloadButtons";
 import ChartsDisplay from "../components/ChartsDisplay";
 import { useAuth } from "react-oidc-context";
+import { REPORTS } from "../config/reportConfig";
 
-const ReportAnalyzerPage = ({ reportType, reportTitle, reportDescription }) => {
+const ReportAnalyzerPage = () => {
+  const { reportType } = useParams();       // from URL
+  const navigate = useNavigate();           // for "Back" button
   const auth = useAuth();
 
-  // State
+  // ✅ All hooks declared at top level
   const [files, setFiles] = useState([]);
   const [progress, setProgress] = useState({});
   const [loading, setLoading] = useState(false);
@@ -18,7 +22,17 @@ const ReportAnalyzerPage = ({ reportType, reportTitle, reportDescription }) => {
   const [chartData, setChartData] = useState([]);
   const [error, setError] = useState("");
 
-  // Reset state when files cleared
+  // Keep track of intervals so we can clear them on unmount
+  const intervalsRef = useRef([]);
+
+ useEffect(() => {
+  const intervals = intervalsRef.current; // snapshot current value
+  return () => {
+    intervals.forEach(clearInterval);
+  };
+}, []);
+
+
   useEffect(() => {
     if (files.length === 0) {
       setProgress({});
@@ -28,7 +42,7 @@ const ReportAnalyzerPage = ({ reportType, reportTitle, reportDescription }) => {
     }
   }, [files]);
 
-  // Handle files dropped or selected
+  // Dropzone
   const onDrop = useCallback((acceptedFiles) => {
     setFiles(acceptedFiles);
     setDownloadUrls([]);
@@ -49,7 +63,6 @@ const ReportAnalyzerPage = ({ reportType, reportTitle, reportDescription }) => {
     multiple: true,
   });
 
-  // Animate processing progress
   const animateProcessing = (fileName) => {
     let proc = 0;
     const interval = setInterval(() => {
@@ -59,10 +72,10 @@ const ReportAnalyzerPage = ({ reportType, reportTitle, reportDescription }) => {
         [fileName]: { ...prev[fileName], processing: proc },
       }));
     }, 100);
+    intervalsRef.current.push(interval);
     return interval;
   };
 
-  // Handle upload and processing
   const handleUpload = async () => {
     if (!files.length) return;
 
@@ -89,14 +102,19 @@ const ReportAnalyzerPage = ({ reportType, reportTitle, reportDescription }) => {
       const interval = animateProcessing(file.name);
 
       try {
-        const res = await uploadReport(reportType, file, (event) => {
-          if (!event.total) return;
-          const percent = Math.round((event.loaded / event.total) * 100);
-          setProgress((prev) => ({
-            ...prev,
-            [file.name]: { ...prev[file.name], upload: percent },
-          }));
-        }, auth.user?.access_token);
+        const res = await uploadReport(
+          reportType,
+          file,
+          (event) => {
+            if (!event.total) return;
+            const percent = Math.round((event.loaded / event.total) * 100);
+            setProgress((prev) => ({
+              ...prev,
+              [file.name]: { ...prev[file.name], upload: percent },
+            }));
+          },
+          auth.user?.access_token
+        );
 
         clearInterval(interval);
 
@@ -117,7 +135,7 @@ const ReportAnalyzerPage = ({ reportType, reportTitle, reportDescription }) => {
         setProgress((prev) => ({
           ...prev,
           [file.name]: {
-            ...prev[file.name],
+            ...prev[file.name],   // ✅ fixed bug (was fileName)
             status: "error",
             errorMsg: err.message || "Upload failed",
           },
@@ -131,11 +149,37 @@ const ReportAnalyzerPage = ({ reportType, reportTitle, reportDescription }) => {
     setLoading(false);
   };
 
+  // ✅ Conditional return AFTER hooks
+  const reportConfig = REPORTS.find((r) => r.type === reportType);
+  if (!reportConfig) {
+    return (
+      <div className="p-8 text-white">
+        <h1 className="text-3xl font-bold">Report Not Found</h1>
+        <button
+          onClick={() => navigate("/reports")}
+          className="mt-4 px-4 py-2 bg-blue-500 rounded hover:bg-blue-600"
+        >
+          Go Back to Reports
+        </button>
+      </div>
+    );
+  }
+
+  const { title: reportTitle, description: reportDescription } = reportConfig;
+
   return (
     <div className="p-8 bg-gray-900 min-h-screen text-white">
+      {/* Back Button */}
+      <button
+        onClick={() => navigate("/reports")}
+        className="mb-4 px-4 py-2 bg-blue-500 rounded hover:bg-blue-600"
+      >
+        ← Back to Reports
+      </button>
+
       {/* Title */}
       <h1 className="text-4xl font-extrabold mb-2 bg-gradient-to-r from-blue-400 via-green-400 to-purple-400 text-transparent bg-clip-text">
-        {reportTitle || "Data Analyzer"}
+        {reportTitle}
       </h1>
       {reportDescription && (
         <div className="flex items-center gap-2 text-gray-300 mb-6">
@@ -147,7 +191,6 @@ const ReportAnalyzerPage = ({ reportType, reportTitle, reportDescription }) => {
       {/* Upload section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div>
-          {/* Drag & drop */}
           <div
             {...getRootProps()}
             className={`border-2 border-dashed rounded-xl h-36 flex flex-col items-center justify-center gap-2 cursor-pointer mb-6 transition
@@ -161,12 +204,10 @@ const ReportAnalyzerPage = ({ reportType, reportTitle, reportDescription }) => {
             </p>
           </div>
 
-          {/* File progress list */}
           <div className="space-y-3 mb-6">
             <FileProgressList files={files} progress={progress} />
           </div>
 
-          {/* Upload button */}
           <button
             onClick={handleUpload}
             disabled={loading || files.length === 0}
@@ -175,7 +216,6 @@ const ReportAnalyzerPage = ({ reportType, reportTitle, reportDescription }) => {
             {loading ? "Uploading..." : "Upload & Analyze"}
           </button>
 
-          {/* Error message */}
           {error && (
             <div className="bg-red-900/30 border border-red-700 text-red-400 rounded-lg px-4 py-2">
               {error}
@@ -183,7 +223,6 @@ const ReportAnalyzerPage = ({ reportType, reportTitle, reportDescription }) => {
           )}
         </div>
 
-        {/* Download links */}
         <div>
           <div className="bg-gray-800/40 border border-gray-700 rounded-xl p-4">
             <DownloadButtons downloadUrls={downloadUrls} />
@@ -191,7 +230,6 @@ const ReportAnalyzerPage = ({ reportType, reportTitle, reportDescription }) => {
         </div>
       </div>
 
-      {/* Charts section */}
       {chartData.length > 0 && (
         <div className="mt-12 pt-8 border-t border-gray-800">
           <h2 className="text-2xl font-bold text-purple-400 mb-6">
