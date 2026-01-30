@@ -1,16 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import ReportCard from "./components/ReportCard";
-import ReportUploadModal from "./components/ReportUploadModal";
 import { REPORTS } from "./config/reportConfig";
 
 const ReportListPage = () => {
-  const [selectedReport, setSelectedReport] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Filter reports by title
-  const filteredReports = REPORTS.filter((report) =>
-    report.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredReports = useMemo(() => {
+    return REPORTS.filter((report) =>
+      report.title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [searchQuery]);
 
   return (
     <div className="p-8 bg-gray-900 min-h-screen text-white">
@@ -27,6 +26,7 @@ const ReportListPage = () => {
         <div className="relative">
           <input
             type="text"
+            aria-label="Search reports"
             placeholder="Search reports..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -45,6 +45,15 @@ const ReportListPage = () => {
               d="M21 21l-4.35-4.35M10 18a8 8 0 100-16 8 8 0 000 16z"
             />
           </svg>
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-200"
+              aria-label="Clear search"
+            >
+              ✕
+            </button>
+          )}
         </div>
       </div>
 
@@ -55,10 +64,10 @@ const ReportListPage = () => {
           return (
             <ReportCard
               key={report.type}
+              type={report.type}   // ✅ pass type for navigation
               title={report.title}
               description={report.description}
-              icon={<Icon />}
-              onClick={() => setSelectedReport(report)}
+              icon={<Icon className="h-6 w-6" />}
             />
           );
         })}
@@ -70,15 +79,6 @@ const ReportListPage = () => {
           No reports found matching "{searchQuery}"
         </p>
       )}
-
-      {/* Upload Modal */}
-      <ReportUploadModal
-        isOpen={!!selectedReport}
-        reportType={selectedReport?.type}
-        reportTitle={selectedReport?.title}
-        reportDescription={selectedReport?.description}
-        onClose={() => setSelectedReport(null)}
-      />
     </div>
   );
 };

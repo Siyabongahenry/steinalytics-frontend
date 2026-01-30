@@ -3,9 +3,9 @@ import { useDropzone } from "react-dropzone";
 import { useParams, useNavigate } from "react-router-dom";
 import { uploadReport } from "../services/ReportServices";
 import { FaUpload, FaInfoCircle } from "react-icons/fa";
-import FileProgressList from "../components/FileProgressList";
-import DownloadButtons from "../components/DownloadButtons";
-import ChartsDisplay from "../components/ChartsDisplay";
+import FileProgressList from "../components/ReportUploadModal/FileProgressList";
+import DownloadButtons from "../components/ReportUploadModal/DownloadButtons";
+import ChartsDisplay from "../components/ReportUploadModal/ChartsDisplay";
 import { useAuth } from "react-oidc-context";
 import { REPORTS } from "../config/reportConfig";
 
