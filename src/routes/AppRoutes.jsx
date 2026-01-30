@@ -54,11 +54,12 @@ export default function AppRoutes() {
 
         <Route path="/email-organizer" element={<EmailOrganizer />} />
         <Route path="/callback" element={<CallbackPage />} />
+        <Route path="/reports" element={<ReportPage />} />
+
 
         {/* Protected routes */}
         <Route element={<ProtectedRoute />}>
           <Route path="/site" element={<SitesPage />} />
-          <Route path="/reports" element={<ReportPage />} />
           <Route path="/hours-calculator" element={<HoursCalculatorPage />} />
           <Route path="/logout" element={<LogoutPage />} />
         </Route>
