@@ -3,7 +3,7 @@ import ReportCard from "./components/ReportCard";
 import ReportUploadModal from "./components/ReportUploadModal";
 import { REPORTS } from "./config/reportConfig";
 
-const ReportPage = () => {
+const ReportListPage = () => {
   const [selectedReport, setSelectedReport] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -83,4 +83,4 @@ const ReportPage = () => {
   );
 };
 
-export default ReportPage;
+export default ReportListPage;
