@@ -8,7 +8,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
     { to: "/site", name: "Site Statistics", icon: UsersIcon },
     { to: "/reports", name: "Reports", icon:  DocumentIcon },
     { to: "/library", name: "Library", icon:  BookOpenIcon },
-    { to: "/email-organizer", name: "Email Organazer", icon:  EnvelopeIcon },
+    { to: "/email-organizer", name: "Email Organizer", icon:  EnvelopeIcon },
     { to: "/about", name: "About", icon:  InformationCircleIcon }
 
   ];
