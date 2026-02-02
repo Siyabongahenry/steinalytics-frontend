@@ -26,25 +26,25 @@ This project integrates seamlessly with the [Steinalytics Backend](https://githu
 
 3. Install dependencies
    
-         ```bash
+```bash
          npm install
-         ```
+```
 
 5. Create .env and .gitignore
 
          **Add the content below in .env**
-        
+```bash
          VITE_API_URL=https://api.yourdomain.co.za
          VITE_COGNITO_CLIENT_ID=your_cognito_client_id
          VITE_COGNITO_USER_POOL_ID=your_user_pool_id
-        
+```
          **Add the content below in .gitignore**
-      
+```bash 
          /node_modules
          /dist
          .env
-        
-6. Start development server
+```
+7. Start development server
    
          ```bash
          npm run dev
