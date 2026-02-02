@@ -1,16 +1,40 @@
-# React + Vite
+# Steinalytics Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![React](https://img.shields.io/badge/React-Frontend-61DAFB?logo=react)
+![JavaScript](https://img.shields.io/badge/JavaScript-ES6-yellow?logo=javascript)
+![AWS S3](https://img.shields.io/badge/AWS-S3-orange?logo=amazonaws)
+![CloudFront](https://img.shields.io/badge/AWS-CloudFront-orange?logo=amazonaws)
+![CloudFormation](https://img.shields.io/badge/AWS-CloudFormation-orange?logo=amazonaws)
+![GitHub Actions](https://img.shields.io/badge/GitHub-Actions-blue?logo=githubactions)
+![CI/CD](https://img.shields.io/badge/CI/CD-Automated-success?logo=github)
 
-Currently, two official plugins are available:
+A modern **ReactJS** frontend application for the Steinalytics platform, designed to deliver responsive dashboards and Excel automation tools.  
+This project integrates seamlessly with the [Steinalytics Backend](https://github.com/Siyabongahenry/SteinalyticsReportAPI) powered by FastAPI.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## ✨ Features
+- Built with **ReactJS** for dynamic, responsive UI  
+- Authentication via **AWS Cognito** (integrated with backend)  
+- Hosted on **Amazon S3** with **CloudFront CDN** for global delivery  
+- Infrastructure managed using **AWS CloudFormation** templates  
+- Automated deployments via **GitHub Workflows** (CI/CD pipeline)  
+- Secure communication with backend APIs over HTTPS  
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 🏗️ Architecture Overview
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```text
++---------------------+          HTTPS Requests          +---------------------+
+|  Steinalytics       |  ----------------------------->  |  Steinalytics       |
+|  Frontend (ReactJS) |                                   |  Backend (FastAPI)  |
+|  - Hosted on S3     |                                   |  - Hosted on EC2/ECS|
+|  - CloudFront CDN   |                                   |  - Auth via Cognito |
++---------------------+                                   +---------------------+
+         |
+         v
++---------------------+
+| End Users           |
+| Access via Browser  |
++---------------------+
