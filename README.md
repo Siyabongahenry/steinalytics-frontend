@@ -38,11 +38,12 @@ This project integrates seamlessly with the [Steinalytics Backend](https://githu
          VITE_COGNITO_USER_POOL_ID=your_user_pool_id
          ```
          **Add the content below in .gitignore**
+         ```bash
          /node_modules
          /dist
          .env
-
-4. Start development server
+         ```
+5. Start development server
          ```bash
          npm run dev
          ```
