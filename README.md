@@ -19,17 +19,19 @@ This project integrates seamlessly with the [Steinalytics Backend](https://githu
 
 
 1. Clone the repository (replace with your own repo if forked)
+   
          ```bash
          git clone https://github.com/Siyabongahenry/steinalytics-frontend.git
          cd steinalytics-frontend
          ```
 
-2. Install dependencies
+3. Install dependencies
+   
          ```bash
          npm install
          ```
 
-3. Create .env and .gitignore
+5. Create .env and .gitignore
 
          **Add the content below in .env**
         
@@ -43,7 +45,8 @@ This project integrates seamlessly with the [Steinalytics Backend](https://githu
          /dist
          .env
         
-5. Start development server
+6. Start development server
+   
          ```bash
          npm run dev
          ```
