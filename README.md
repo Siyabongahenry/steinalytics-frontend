@@ -17,7 +17,6 @@ This project integrates seamlessly with the [Steinalytics Backend](https://githu
 - Built with **ReactJS** for dynamic, responsive UI  
 - Authentication via **AWS Cognito** (integrated with backend)  
 - Hosted on **Amazon S3** with **CloudFront CDN** for global delivery  
-- Infrastructure managed using **AWS CloudFormation** templates  
 - Automated deployments via **GitHub Workflows** (CI/CD pipeline)  
 - Secure communication with backend APIs over HTTPS  
 
