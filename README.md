@@ -46,9 +46,9 @@ This project integrates seamlessly with the [Steinalytics Backend](https://githu
 ```
 7. Start development server
    
-         ```bash
+```bash
          npm run dev
-         ```
+```
 ---
 ### 🚀 Deployment Guide
 
