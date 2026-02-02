@@ -89,12 +89,12 @@ git push -u origin main
 ## 🏗️ Architecture & Deployment
 
 ```text
-+---------------------+          HTTPS Requests          +---------------------+
-|  Steinalytics       |  ----------------------------->  |  Steinalytics       |
-|  Frontend (Vite+React) |                                |  Backend (FastAPI)  |
-|  - Hosted on S3     |                                   |  - Hosted on EC2/ECS|
-|  - CloudFront CDN   |                                   |  - Auth via Cognito |
-+---------------------+                                   +---------------------+
++------------------------+          HTTPS Requests           +---------------------+
+|  Steinalytics          |  -------------------------------->|  Steinalytics       |
+|  Frontend (Vite+React) |                                   |  Backend (FastAPI)  |
+|  - Hosted on S3        |                                   |  - Hosted on EC2/ECS|
+|  - CloudFront CDN      |                                   |  - Auth via Cognito |
++------------------------+                                   +---------------------+
          |
          v
 +---------------------+
