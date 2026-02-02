@@ -19,7 +19,21 @@ This project integrates seamlessly with the [Steinalytics Backend](https://githu
 - Hosted on **Amazon S3** with **CloudFront CDN** for global delivery  
 - Automated deployments via **GitHub Workflows** (CI/CD pipeline)  
 - Secure communication with backend APIs over HTTPS  
+---
+##Installation locally
 
+```bash
+# Clone the repository
+git clone https://github.com/Siyabongahenry/steinalytics-frontend.git
+cd steinalytics-frontend
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+```
 ---
 
 ## 🏗️ Architecture Overview
