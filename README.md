@@ -13,20 +13,13 @@ This project integrates seamlessly with the [Steinalytics Backend](https://githu
 
 ---
 
-## ✨ Features
-- Built with **Vite + ReactJS** for fast builds and hot module replacement  
-- Authentication via **AWS Cognito** (integrated with backend)  
-- Hosted on **Amazon S3** with **CloudFront CDN** for global delivery  
-- Automated deployments via **GitHub Workflows** (CI/CD pipeline)  
-- Secure communication with backend APIs over HTTPS  
+## 📦 Installation, 🏗️ Architecture & 🚀 Deployment
 
----
-
-## 📦 Installation (Local Development)
+### Local Development Setup
 
 ```bash
-# Clone the repository
-git clone https://github.com/Siyabongahenry/steinalytics-frontend.git
+# Clone the repository (replace with your own repo if forked)
+git clone https://github.com/<your-username>/<your-repo>.git
 cd steinalytics-frontend
 
 # Install dependencies
@@ -44,6 +37,50 @@ VITE_COGNITO_USER_POOL_ID=your_user_pool_id
 /dist
 .env
 
+# Start development server
+npm run dev
+
+## 🚀 Deployment Guide
+
+Follow these steps to deploy **Steinalytics Frontend** to AWS with automated CI/CD:
+
+### 1. Create S3 Bucket + CloudFront Distribution
+- Create an **S3 bucket** to host the Vite build files (`dist/`).  
+- Configure a **CloudFront distribution** pointing to the S3 bucket for CDN caching and HTTPS delivery.  
+- Optionally, use **Route 53** to map your domain (`www.yourdomain.com`) to the CloudFront distribution.  
+
+### 2. Configure GitHub Secrets
+Add the following secrets in your repository (`Settings > Secrets and variables > Actions`):
+
+- `AWS_ACCESS_KEY_ID` → IAM user access key  
+- `AWS_SECRET_ACCESS_KEY` → IAM user secret key  
+- `AWS_REGION` → e.g., `us-east-1`  
+- `S3_BUCKET_NAME` → your deployment bucket name  
+- `CLOUDFRONT_DISTRIBUTION_ID` → your CloudFront distribution ID  
+
+### 3. Push Project to GitHub
+Commit and push your project to the `main` branch to trigger the GitHub Actions workflow:
+
+```bash
+# Initialize git (if not already done)
+git init
+
+# Add all files
+git add .
+
+# Commit changes
+git commit -m "Initial commit for Steinalytics Frontend"
+
+# Add your GitHub repository as remote
+git remote add origin https://github.com/<your-username>/<your-repo>.git
+
+# Push to GitHub
+git branch -M main
+git push -u origin main
+
+
+## 🏗️ Architecture & Deployment
+
 ```text
 +---------------------+          HTTPS Requests          +---------------------+
 |  Steinalytics       |  ----------------------------->  |  Steinalytics       |
@@ -57,9 +94,3 @@ VITE_COGNITO_USER_POOL_ID=your_user_pool_id
 | End Users           |
 | Access via Browser  |
 +---------------------+
-
-
-```
-
-# Start development server
-npm run dev
