@@ -85,8 +85,8 @@ Follow these steps to deploy **Steinalytics Frontend** to AWS with automated CI/
          git branch -M main
          git push -u origin main
          ```
-         
-         ## 🏗️ Architecture & Deployment
+---       
+## 🏗️ Architecture & Deployment
 
 ```text
 +------------------------+          HTTPS Requests           +---------------------+
