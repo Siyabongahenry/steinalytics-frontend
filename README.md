@@ -21,25 +21,31 @@ This project integrates seamlessly with the [Steinalytics Backend](https://githu
 # Clone the repository (replace with your own repo if forked)
 git clone https://github.com/<your-username>/<your-repo>.git
 cd steinalytics-frontend
+```
 
 # Install dependencies
+```bash
 npm install
+```
 
 # Create .env and .gitignore
 
 # Add the content below in .env
+```bash
 VITE_API_URL=https://api.yourdomain.co.za
 VITE_COGNITO_CLIENT_ID=your_cognito_client_id
 VITE_COGNITO_USER_POOL_ID=your_user_pool_id
-
+```
 # Add the content below in .gitignore
 /node_modules
 /dist
 .env
 
 # Start development server
+```bash
 npm run dev
-
+```
+---
 ## 🚀 Deployment Guide
 
 Follow these steps to deploy **Steinalytics Frontend** to AWS with automated CI/CD:
