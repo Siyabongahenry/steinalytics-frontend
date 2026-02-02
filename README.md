@@ -19,11 +19,10 @@ This project integrates seamlessly with the [Steinalytics Backend](https://githu
 
 
 1. Clone the repository (replace with your own repo if forked)
-   
-         ```bash
+```bash
          git clone https://github.com/Siyabongahenry/steinalytics-frontend.git
          cd steinalytics-frontend
-         ```
+```
 
 3. Install dependencies
    
