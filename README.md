@@ -17,45 +17,46 @@ This project integrates seamlessly with the [Steinalytics Backend](https://githu
 
 ### Local Development Setup
 
+
+1. Clone the repository (replace with your own repo if forked)
 ```bash
-# Clone the repository (replace with your own repo if forked)
 git clone https://github.com/Siyabongahenry/steinalytics-frontend.git
 cd steinalytics-frontend
 ```
 
-# Install dependencies
+2. Install dependencies
 ```bash
 npm install
 ```
 
-# Create .env and .gitignore
+3. Create .env and .gitignore
 
-# Add the content below in .env
+**Add the content below in .env**
 ```bash
 VITE_API_URL=https://api.yourdomain.co.za
 VITE_COGNITO_CLIENT_ID=your_cognito_client_id
 VITE_COGNITO_USER_POOL_ID=your_user_pool_id
 ```
-# Add the content below in .gitignore
+**Add the content below in .gitignore**
 /node_modules
 /dist
 .env
 
-# Start development server
+4. Start development server
 ```bash
 npm run dev
 ```
 ---
-## 🚀 Deployment Guide
+### 🚀 Deployment Guide
 
 Follow these steps to deploy **Steinalytics Frontend** to AWS with automated CI/CD:
 
-### 1. Create S3 Bucket + CloudFront Distribution
+1. Create S3 Bucket + CloudFront Distribution
 - Create an **S3 bucket** to host the Vite build files (`dist/`).  
 - Configure a **CloudFront distribution** pointing to the S3 bucket for CDN caching and HTTPS delivery.  
 - Optionally, use **Route 53** to map your domain (`www.yourdomain.com`) to the CloudFront distribution.  
 
-### 2. Configure GitHub Secrets
+2. Configure GitHub Secrets
 Add the following secrets in your repository (`Settings > Secrets and variables > Actions`):
 
 - `AWS_ACCESS_KEY_ID` → IAM user access key  
@@ -64,7 +65,7 @@ Add the following secrets in your repository (`Settings > Secrets and variables 
 - `S3_BUCKET_NAME` → your deployment bucket name  
 - `CLOUDFRONT_DISTRIBUTION_ID` → your CloudFront distribution ID  
 
-### 3. Push Project to GitHub
+3. Push Project to GitHub
 Commit and push your project to the `main` branch to trigger the GitHub Actions workflow:
 
 ```bash
