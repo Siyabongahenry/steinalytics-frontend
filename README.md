@@ -19,7 +19,7 @@ This project integrates seamlessly with the [Steinalytics Backend](https://githu
 
 ```bash
 # Clone the repository (replace with your own repo if forked)
-git clone https://github.com/<your-username>/<your-repo>.git
+git clone https://github.com/Siyabongahenry/steinalytics-frontend.git
 cd steinalytics-frontend
 ```
 
