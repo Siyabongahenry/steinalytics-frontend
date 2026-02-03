@@ -9,7 +9,8 @@ import CallbackPage from "../pages/CallbackPage";
 /* Lazy-loaded pages */
 const HomePage = lazy(() => import("../pages/HomePage"));
 const SitesPage = lazy(() => import("../pages/SitesPage"));
-const ReportPage = lazy(() => import("../features/reports/ReportPage"));
+const ReportListPage = lazy(() => import("../features/reports/ReportListPage"));
+const ReportAnalyzerPage = lazy(() => import("../features/reports/pages/ReportAnalyzerPage.jsx"));
 const ProfilePage = lazy(() => import("../features/profile/ProfilePage.jsx"));
 const LibraryPage = lazy(() => import("../features/library/LibraryPage.jsx"));
 const BookDetailsPage = lazy(() => import("../features/library/pages/BookDetailsPage.jsx"));
@@ -55,10 +56,13 @@ export default function AppRoutes() {
         <Route path="/email-organizer" element={<EmailOrganizer />} />
         <Route path="/callback" element={<CallbackPage />} />
 
+        <Route path="/reports" element={<ReportListPage />} />
+        <Route path="/reports/:reportType" element={<ReportAnalyzerPage />} />
+
+
         {/* Protected routes */}
         <Route element={<ProtectedRoute />}>
           <Route path="/site" element={<SitesPage />} />
-          <Route path="/reports" element={<ReportPage />} />
           <Route path="/hours-calculator" element={<HoursCalculatorPage />} />
           <Route path="/logout" element={<LogoutPage />} />
         </Route>

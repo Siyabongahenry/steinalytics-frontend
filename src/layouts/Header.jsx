@@ -52,10 +52,13 @@ export default function Header({ setSidebarOpen }) {
       {/* User dropdown */}
       <div className="relative" ref={dropdownRef}>
         <button
-          className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-800 transition"
+          className="flex items-center gap-1 sm:gap-2 p-1.5 sm:p-2 rounded-md hover:bg-gray-800 transition"
           onClick={() => setProfileOpen(!profileOpen)}
         >
-          <span>{displayName}</span>
+          {/* Hide name on mobile */}
+          <span className="hidden sm:inline">
+            {displayName}
+          </span>
           <ChevronDownIcon className="w-4 h-4" />
         </button>
 
