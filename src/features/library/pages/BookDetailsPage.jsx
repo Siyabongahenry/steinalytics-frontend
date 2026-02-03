@@ -99,7 +99,7 @@ export default function BookDetailsPage() {
         {/* Book Info */}
         <div className="flex flex-col md:flex-row gap-8">
           <img
-            src={book.cover}
+            src={book.file_url}
             alt={book.title}
             className="w-48 h-72 object-cover rounded-lg shadow-md"
           />

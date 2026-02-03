@@ -27,7 +27,7 @@ export default function AppRoutes() {
   return (
     <Suspense
       fallback={
-        <div className="h-screen w-screen flex flex-col items-center justify-center bg-gray-900 text-white">
+        <div className="flex flex-col items-center justify-center bg-gray-900 text-white">
           <Spinner />
           <p className="text-xl font-semibold animate-pulse">Loading...</p>
           <p className="text-gray-400 mt-2 text-sm text-center">
