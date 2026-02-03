@@ -8,7 +8,7 @@ export default function BookCard({ book }) {
       <Link to={`/library/books/${book.id}`}>
         <div className="overflow-hidden rounded">
           <img
-            src={book.cover}
+            src={book.file_url}
             alt={book.title}
             className="w-full aspect-[2/3] object-cover transform transition-transform duration-300 hover:scale-105"
           />

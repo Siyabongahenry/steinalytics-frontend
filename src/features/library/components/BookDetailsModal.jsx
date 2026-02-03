@@ -35,7 +35,7 @@ export default function BookDetailsModal({ book, onClose, onBorrow }) {
           {/* Book Cover */}
           <div className="flex-shrink-0">
             <img
-              src={book.cover}
+              src={book.file_url}
               alt={book.title}
               className="w-48 md:w-64 rounded-lg object-cover shadow-lg"
             />
