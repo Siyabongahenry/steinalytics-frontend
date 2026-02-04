@@ -62,7 +62,7 @@ export default function AppRoutes() {
 
         {/* Protected routes */}
         <Route element={<ProtectedRoute />}>
-          <Route path="/site" element={<SitesPage />} />
+          <Route path="/statistics" element={<SitesPage />} />
           <Route path="/hours-calculator" element={<HoursCalculatorPage />} />
           <Route path="/logout" element={<LogoutPage />} />
         </Route>
