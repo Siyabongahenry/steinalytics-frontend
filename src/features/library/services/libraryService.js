@@ -18,6 +18,13 @@ export async function getBooks({ query = "", filters = {}, page = 1, id = null }
 }
 
 // --------------------
+// Get Book with id
+// --------------------
+export async function getBook(bookId) {
+  const response = await api.get(`/books/${bookId}`)
+  return response.data;
+}
+// --------------------
 // Borrow Book
 // --------------------
 export async function borrowBook(bookId, access_token) {

@@ -1,6 +1,6 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getBooks, getAIDescription, joinWaitingList, rateBook } from "../services/libraryService";
+import { getBook, getAIDescription, joinWaitingList, rateBook } from "../services/libraryService";
 import {
   SparklesIcon,
   ArrowLeftIcon,
@@ -21,7 +21,7 @@ export default function BookDetailsPage() {
   const [rating, setRating] = useState(0);
 
   useEffect(() => {
-    getBooks({ id }).then((data) => setBook(data));
+    getBook(id).then((data) => setBook(data));
   }, [id]);
 
   const handleGenerateDescription = async () => {
@@ -46,7 +46,7 @@ export default function BookDetailsPage() {
     try {
       await joinWaitingList(book.id);
       toast.success("Added to waiting list!");
-      const updated = await getBooks({ id });
+      const updated = await getBook(id);
       setBook(updated);
     } catch (err) {
       console.error(err);
@@ -59,7 +59,7 @@ export default function BookDetailsPage() {
       setRating(value);
       await rateBook(book.id, value);
       toast.success(`You rated this book ${value} stars!`);
-      const updated = await getBooks({ id });
+      const updated = await getBook(id);
       setBook(updated);
     } catch (err) {
       console.error(err);
