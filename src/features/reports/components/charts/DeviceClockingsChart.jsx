@@ -30,7 +30,7 @@ const CustomTooltip = ({ active, payload, label, coordinate }) => {
   return (
     <div
       style={style}
-      className="bg-gray-900/95 border border-gray-700 rounded-lg px-4 py-3 shadow-xl max-h-40 overflow-y-auto"
+      className="bg-gray-900/95 border border-gray-700 rounded-lg px-4 py-3 shadow-xl"
     >
       <p className="text-gray-300 text-xs mb-2">{label}</p>
       <div className="space-y-1">
