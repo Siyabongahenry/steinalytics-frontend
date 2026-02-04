@@ -5,10 +5,10 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
   const links = [
     { to: "/home", name: "Home", icon: HomeIcon },
      { to: "/profile", name: "Profile", icon: UserIcon },
-    { to: "/site", name: "Site Statistics", icon: UsersIcon },
+    { to: "/statistics", name: "Statistics", icon: UsersIcon },
     { to: "/reports", name: "Reports", icon:  DocumentIcon },
-    { to: "/library", name: "Library", icon:  BookOpenIcon },
     { to: "/email-organizer", name: "Email Organizer", icon:  EnvelopeIcon },
+    { to: "/library", name: "Library", icon:  BookOpenIcon },
     { to: "/about", name: "About", icon:  InformationCircleIcon }
 
   ];
