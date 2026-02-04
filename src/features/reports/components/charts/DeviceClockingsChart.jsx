@@ -15,11 +15,23 @@ import {
 /* ===============================
    Custom tooltip (portal-based)
 ================================ */
-const CustomTooltip = ({ active, payload, label }) => {
+const CustomTooltip = ({ active, payload, label, coordinate }) => {
   if (!active || !payload?.length) return null;
 
+  // Position tooltip to the left of the cursor
+  const style = {
+    position: "absolute",
+    left: coordinate.x - 160, // shift left (adjust as needed)
+    top: coordinate.y - 40,   // slightly above cursor
+    pointerEvents: "none",
+    zIndex: 9999,
+  };
+
   return (
-    <div className="bg-gray-900/95 border border-gray-700 rounded-lg px-4 py-3 shadow-xl max-h-40 overflow-y-auto mt-4">
+    <div
+      style={style}
+      className="bg-gray-900/95 border border-gray-700 rounded-lg px-4 py-3 shadow-xl max-h-40 overflow-y-auto"
+    >
       <p className="text-gray-300 text-xs mb-2">{label}</p>
       <div className="space-y-1">
         {payload.map((p) => (
@@ -35,6 +47,7 @@ const CustomTooltip = ({ active, payload, label }) => {
     </div>
   );
 };
+
 
 /* ===============================
    Main component
