@@ -18,12 +18,8 @@ import {
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
 
-  // Render tooltip into body so it's not tied to chart mouse movement
-  return ReactDOM.createPortal(
-    <div
-      className="fixed top-24 left-24 bg-gray-900/95 border border-gray-700 rounded-lg px-4 py-3 shadow-xl max-h-60 overflow-y-auto"
-      style={{ zIndex: 9999 }}
-    >
+  return (
+    <div className="bg-gray-900/95 border border-gray-700 rounded-lg px-4 py-3 shadow-xl max-h-40 overflow-y-auto mt-4">
       <p className="text-gray-300 text-xs mb-2">{label}</p>
       <div className="space-y-1">
         {payload.map((p) => (
@@ -36,8 +32,7 @@ const CustomTooltip = ({ active, payload, label }) => {
           </div>
         ))}
       </div>
-    </div>,
-    document.body
+    </div>
   );
 };
 
