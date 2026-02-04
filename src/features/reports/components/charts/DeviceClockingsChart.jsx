@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from "react";
+import ReactDOM from "react-dom";
 import Select from "react-select";
 import {
   LineChart,
@@ -12,15 +13,19 @@ import {
 } from "recharts";
 
 /* ===============================
-   Custom tooltip
+   Custom tooltip (portal-based)
 ================================ */
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
 
-  return (
-    <div className="bg-gray-900/95 border border-gray-700 rounded-lg px-4 py-3 shadow-xl">
+  // Render tooltip into body so it's not tied to chart mouse movement
+  return ReactDOM.createPortal(
+    <div
+      className="fixed top-24 left-24 bg-gray-900/95 border border-gray-700 rounded-lg px-4 py-3 shadow-xl max-h-60 overflow-y-auto"
+      style={{ zIndex: 9999 }}
+    >
       <p className="text-gray-300 text-xs mb-2">{label}</p>
-      <div className="space-y-1 max-h-40 overflow-y-auto">
+      <div className="space-y-1">
         {payload.map((p) => (
           <div
             key={p.dataKey}
@@ -31,7 +36,8 @@ const CustomTooltip = ({ active, payload, label }) => {
           </div>
         ))}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 
@@ -95,9 +101,7 @@ const DeviceClockingsChart = ({ data }) => {
 
         {/* Threshold toggle */}
         <label className="flex items-center gap-3 cursor-pointer">
-          <span className="text-sm text-gray-300">
-            Show threshold (150)
-          </span>
+          <span className="text-sm text-gray-300">Show threshold (150)</span>
           <div className="relative">
             <input
               type="checkbox"
@@ -178,7 +182,7 @@ const DeviceClockingsChart = ({ data }) => {
             tick={{ fontSize: 11 }}
           />
           <YAxis stroke="#aaa" tick={{ fontSize: 11 }} />
-          <Tooltip content={<CustomTooltip />} />
+          <Tooltip content={<CustomTooltip />} wrapperStyle={{ pointerEvents: "auto" }} />
 
           {showThreshold && (
             <ReferenceLine
