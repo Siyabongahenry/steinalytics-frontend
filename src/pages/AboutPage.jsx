@@ -12,7 +12,7 @@ const AboutPage = () => {
         </h1>
 
         <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
-          Founded in 2025, Steinalytics is building the future of HR analytics —
+          Founded in 2025, Steinalytics is building the future of analytics —
           combining automation and live data visualization to help organizations
           make smarter decisions.
         </p>
@@ -24,7 +24,7 @@ const AboutPage = () => {
           <FaRobot className="w-16 h-16 text-blue-400 mx-auto mb-4" />
           <h2 className="text-xl font-semibold mb-2">Our Mission</h2>
           <p className="text-gray-400">
-            Simplify HR challenges through automation and powerful analytics.
+            Simplify challenges through automation and powerful analytics.
           </p>
         </div>
 
@@ -33,7 +33,7 @@ const AboutPage = () => {
           <h2 className="text-xl font-semibold mb-2">Our Capabilities</h2>
           <p className="text-gray-400">
             Upload Excel files, generate automated reports, and visualize live
-            HR data trends.
+            data trends.
           </p>
         </div>
 
@@ -41,7 +41,7 @@ const AboutPage = () => {
           <FaChartLine className="w-16 h-16 text-yellow-400 mx-auto mb-4" />
           <h2 className="text-xl font-semibold mb-2">Our Vision</h2>
           <p className="text-gray-400">
-            We are building the future tool for HR analytics — empowering
+            We are building the future tool for analytics — empowering
             organizations worldwide.
           </p>
         </div>
@@ -53,7 +53,7 @@ const AboutPage = () => {
           <FaUsers className="w-16 h-16 text-purple-400 mx-auto mb-4" />
           <h2 className="text-xl font-semibold mb-2">Our Team</h2>
           <p className="text-gray-400">
-            A passionate group of innovators dedicated to solving HR challenges
+            A passionate group of innovators dedicated to solving challenges
             with technology.
           </p>
         </div>
@@ -62,7 +62,7 @@ const AboutPage = () => {
           <FaRocket className="w-16 h-16 text-pink-400 mx-auto mb-4" />
           <h2 className="text-xl font-semibold mb-2">Our Founding</h2>
           <p className="text-gray-400">
-            Steinalytics was founded in 2025 to address HR challenges with
+            Steinalytics was founded in 2025 to address challenges with
             automation and analytics.
           </p>
         </div>
@@ -71,10 +71,10 @@ const AboutPage = () => {
       {/* Call to Action */}
       <section className="text-center py-16 bg-gray-800 mt-12">
         <h2 className="text-2xl md:text-3xl font-bold mb-4 text-white">
-          Ready to see the future of HR analytics?
+          Ready to see the future of analytics?
         </h2>
         <p className="text-gray-400 mb-6">
-          Join us on our journey to transform HR with automation and
+          Join us on our journey to transform with automation and
           visualization.
         </p>
         <button className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold transition">
