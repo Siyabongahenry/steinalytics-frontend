@@ -9,7 +9,7 @@ const HomePage = () => {
       {/* Hero */}
       <section className="text-center py-20 px-6">
        <h1 className="text-5xl font-bold text-blue-400 mb-6">
-          Unlock Organizational Intelligence with Steinalytics
+          Automate. Visualize. Decide.
         </h1>
 
         <p className="text-lg text-gray-300 max-w-3xl mx-auto mb-8">
