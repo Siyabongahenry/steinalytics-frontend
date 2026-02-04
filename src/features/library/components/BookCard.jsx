@@ -6,7 +6,7 @@ export default function BookCard({ book }) {
   return (
     <div className="bg-gray-800 rounded-lg shadow hover:shadow-lg transition-shadow p-3">
       <Link to={`/library/books/${book.id}`}>
-        <div className="overflow-hidden rounded">
+        <div className="overflow-hidden rounded text-center">
           <img
             src={book.file_url}
             alt={book.title}
