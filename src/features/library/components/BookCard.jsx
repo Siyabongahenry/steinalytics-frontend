@@ -4,13 +4,13 @@ export default function BookCard({ book }) {
   const isAvailable = book.available;
 
   return (
-    <div className="bg-gray-800 rounded-lg shadow hover:shadow-lg transition-shadow p-3 w-40">
+    <div className="bg-gray-800 rounded-lg shadow hover:shadow-lg transition-shadow p-3">
       <Link to={`/library/books/${book.id}`}>
         <div className="overflow-hidden rounded">
           <img
             src={book.file_url}
             alt={book.title}
-            className="w-full aspect-[2/3] object-cover transform transition-transform duration-300 hover:scale-105"
+            className="h-56 aspect-[2/3] object-cover transform transition-transform duration-300 hover:scale-105"
           />
         </div>
         <h3 className="text-sm font-semibold mt-2 truncate">{book.title}</h3>
