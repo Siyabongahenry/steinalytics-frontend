@@ -10,7 +10,7 @@ import CallbackPage from "../pages/CallbackPage";
 const HomePage = lazy(() => import("../pages/HomePage"));
 const SitesPage = lazy(() => import("../pages/SitesPage"));
 const ReportListPage = lazy(() => import("../features/reports/ReportListPage"));
-const ReportAnalyzerPage = lazy(() => import("../features/reports/pages/ReportAnalyzerPage.jsx"));
+const ReportAnalyzerPage = lazy(() => import("../features/reports/pages/ReportAnalyzerPage"));
 const ProfilePage = lazy(() => import("../features/profile/ProfilePage.jsx"));
 const LibraryPage = lazy(() => import("../features/library/LibraryPage.jsx"));
 const BookDetailsPage = lazy(() => import("../features/library/pages/BookDetailsPage.jsx"));
