@@ -199,28 +199,60 @@ export default function DonationForm() {
               <option value="Tshivenda">Tshivenda</option>
               <option value="Xitsonga">Xitsonga</option>
               <option value="Sepedi">Sepedi</option>
-
             </select>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">
-              Category
-            </label>
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              disabled={disableForm}
-              className="w-full bg-gray-700 text-gray-100 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
-              required
-            >
-              <option value="">Select Category</option>
-              <option value="fiction">Fiction</option>
-              <option value="nonfiction">Non-fiction</option>
-              <option value="fantasy">Fantasy</option>
-              <option value="history">History</option>
-            </select>
+         <div>
+              <label className="block text-sm font-medium text-gray-300 mb-1">
+                Category
+              </label>
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                disabled={disableForm}
+                className="w-full bg-gray-700 text-gray-100 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                required
+              >
+                <option value="">Select Category</option>
+
+                {/* Fiction */}
+                <optgroup label="Fiction">
+                  <option value="fantasy">Fantasy</option>
+                  <option value="science-fiction">Science Fiction</option>
+                  <option value="dystopian">Dystopian</option>
+                  <option value="adventure">Adventure</option>
+                  <option value="romance">Romance</option>
+                  <option value="contemporary">Contemporary</option>
+                  <option value="mystery">Mystery</option>
+                  <option value="thriller">Thriller</option>
+                  <option value="horror">Horror</option>
+                  <option value="historical-fiction">Historical Fiction</option>
+                  <option value="magical-realism">Magical Realism</option>
+                  <option value="graphic-novel">Graphic Novel</option>
+                  <option value="young-adult">Young Adult</option>
+                  <option value="children">Children’s Fiction</option>
+                </optgroup>
+
+                {/* Non-fiction */}
+                <optgroup label="Non-fiction">
+                  <option value="biography">Biography</option>
+                  <option value="autobiography">Autobiography</option>
+                  <option value="memoir">Memoir</option>
+                  <option value="self-help">Self-Help</option>
+                  <option value="true-crime">True Crime</option>
+                  <option value="history">History</option>
+                  <option value="travel">Travel</option>
+                  <option value="science">Science & Technology</option>
+                  <option value="philosophy">Philosophy</option>
+                  <option value="religion">Religion & Spirituality</option>
+                  <option value="politics">Politics</option>
+                  <option value="essays">Essays</option>
+                  <option value="journalism">Journalism</option>
+                  <option value="health">Health & Wellness</option>
+                </optgroup>
+              </select>
           </div>
+
 
           {/* Submit Button */}
           <button
