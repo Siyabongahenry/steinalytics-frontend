@@ -188,11 +188,18 @@ export default function DonationForm() {
               required
             >
               <option value="">Select Language</option>
-              <option value="Zulu">Zulu</option>
-              <option value="Xhosa">Xhosa</option>
               <option value="Afrikaans">Afrikaans</option>
+              <option value="English">English</option>
+              <option value="isiNdebele">isiNdebele</option>
+              <option value="isiXhosa">isiXhosa</option>
+              <option value="isiZulu">isiZulu</option>
               <option value="Sesotho">Sesotho</option>
-              <option value="Tswana">Tswana</option>
+              <option value="Setswana">Setswana</option>
+              <option value="Siswati">Siswati</option>
+              <option value="Tshivenda">Tshivenda</option>
+              <option value="Xitsonga">Xitsonga</option>
+              <option value="Sepedi">Sepedi</option>
+
             </select>
           </div>
 
