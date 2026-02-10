@@ -5,6 +5,7 @@ import SearchBar from "./components/SearchBar";
 import FilterPanel from "./components/FilterPanel";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { Link } from "react-router-dom";
+import Spinner from "../../components/Spinner"
 
 export default function LibraryPage() {
   const [books, setBooks] = useState([]);
