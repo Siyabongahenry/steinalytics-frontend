@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { donateBook, uploadFile } from "../services/libraryService";
+import { donateBook, identifyBook } from "../services/libraryService";
 import toast, { Toaster } from "react-hot-toast";
 import { CpuChipIcon } from "@heroicons/react/24/outline";
 import { useAuth } from "react-oidc-context";
@@ -60,7 +60,7 @@ export default function DonationForm() {
     if (!file) return toast.error("Please upload a file first!");
     setIsIdentifying(true);
     try {
-      const response = await uploadFile(file, auth.user?.access_token);
+      const response = await identifyBook({title,author}, auth.user?.access_token);
       toast.success("🤖 Book details identified!");
       console.log("Backend response:", response);
     } catch (err) {

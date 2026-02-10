@@ -87,11 +87,9 @@ export async function donateBook(newBook, access_token) {
 // --------------------
 // Identify Book (AI)
 // --------------------
-export const uploadFile = async (file, access_token) => {
-  const formData = new FormData();
-  formData.append("file", file);
+export const identifyBook = async (book, access_token) => {
 
-  const response = await api.post("/books-identifier/identify", formData, {
+  const response = await api.post("/books-identifier/identify", book, {
     headers: {
       "Content-Type": "multipart/form-data",
       Authorization: `Bearer ${access_token}`,

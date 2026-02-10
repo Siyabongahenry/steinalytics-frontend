@@ -15,7 +15,7 @@ export default function BookCard({ book }) {
         </div>
         <h3 className="text-sm font-semibold mt-2 truncate">{book.title}</h3>
         <p className="text-xs text-gray-400 truncate">{book.author}</p>
-      </Link>
+      </Link>s
 
       <p className="text-xs mt-1">
         {isAvailable ? (
