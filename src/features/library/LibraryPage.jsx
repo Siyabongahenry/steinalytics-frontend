@@ -5,7 +5,7 @@ import SearchBar from "./components/SearchBar";
 import FilterPanel from "./components/FilterPanel";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { Link } from "react-router-dom";
-import Spinner from "../../components/Spinner"
+import Spinner from "../../components/Spinner";
 
 export default function LibraryPage() {
   const [books, setBooks] = useState([]);
@@ -13,14 +13,24 @@ export default function LibraryPage() {
   const [filters, setFilters] = useState({});
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Effect only fetches data, no synchronous setState
+  // Fetch books whenever query, filters, or page changes
   useEffect(() => {
-    getBooks({ query, filters, page }).then((data) => {
-      const booksArray = data?.books ?? [];
-      setBooks((prev) => (page === 1 ? booksArray : [...prev, ...booksArray]));
-      setHasMore(booksArray.length > 0);
-    });
+    const fetchBooks = async () => {
+      try {
+        const data = await getBooks({ query, filters, page });
+        const booksArray = data?.books ?? [];
+        setBooks((prev) => (page === 1 ? booksArray : [...prev, ...booksArray]));
+        setHasMore(booksArray.length > 0);
+        setError(null);
+      } catch (err) {
+        console.error(err);
+        setError("Failed to load books. Please try again later.");
+        setHasMore(false);
+      }
+    };
+    fetchBooks();
   }, [query, filters, page]);
 
   // Reset page and books when search changes
@@ -39,14 +49,19 @@ export default function LibraryPage() {
 
   const fetchMoreBooks = async () => {
     const nextPage = page + 1;
-    const data = await getBooks({ query, filters, page: nextPage });
-    const booksArray = data?.books ?? [];
+    try {
+      const data = await getBooks({ query, filters, page: nextPage });
+      const booksArray = data?.books ?? [];
 
-    if (booksArray.length === 0) {
+      if (booksArray.length === 0) {
+        setHasMore(false);
+      } else {
+        setBooks((prev) => [...prev, ...booksArray]);
+        setPage(nextPage);
+      }
+    } catch (err) {
+      console.error(err);
       setHasMore(false);
-    } else {
-      setBooks((prev) => [...prev, ...booksArray]);
-      setPage(nextPage);
     }
   };
 
@@ -64,18 +79,22 @@ export default function LibraryPage() {
         <main className="flex-1">
           <SearchBar onSearch={handleSearch} />
 
+          {error && (
+            <p className="text-center text-red-400 mt-4">{error}</p>
+          )}
+
           <InfiniteScroll
             dataLength={books.length}
             next={fetchMoreBooks}
             hasMore={hasMore}
             loader={
-                <div className="flex flex-col items-center justify-center bg-gray-900 text-white">
-                      <Spinner />
-                      <p className="text-xl font-semibold animate-pulse">Loading...</p>
-                      <p className="text-gray-400 mt-2 text-sm text-center">
-                        Please wait while we prepare the books
-                      </p>
-                </div>
+              <div className="flex flex-col items-center justify-center bg-gray-900 text-white">
+                <Spinner />
+                <p className="text-xl font-semibold animate-pulse">Loading...</p>
+                <p className="text-gray-400 mt-2 text-sm text-center">
+                  Please wait while we prepare the books
+                </p>
+              </div>
             }
             endMessage={
               <p className="text-center text-gray-500 mt-4">
@@ -84,11 +103,15 @@ export default function LibraryPage() {
             }
           >
             <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-              {books.map((book) => (
-               
-                  <BookCard book={book} /> 
-               
-              ))}
+              {books.length === 0 && !hasMore ? (
+                <p className="text-center text-gray-400 mt-6">
+                  No books found. Try adjusting your search or filters.
+                </p>
+              ) : (
+                books.map((book) => (
+                  <BookCard key={book.id || book.isbn} book={book} />
+                ))
+              )}
             </div>
           </InfiniteScroll>
         </main>
@@ -98,6 +121,7 @@ export default function LibraryPage() {
       <Link
         to="/library/donate"
         className="fixed bottom-6 right-6 bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-full shadow-lg"
+        aria-label="Donate a book"
       >
         + Donate
       </Link>
