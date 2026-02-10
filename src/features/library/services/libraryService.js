@@ -21,8 +21,16 @@ export async function getBooks({ query = "", filters = {}, page = 1, id = null }
 // Get Book with id
 // --------------------
 export async function getBook(bookId) {
-  const response = await api.get(`/books/${bookId}`)
-  return response.data;
+    try {
+      const response = await api.get(`/books/${bookId}`);
+      return response.data;
+  } catch (error) {
+    if (error.response) {
+      console.error("API error:", error.response.data);
+    }
+    throw error;
+}
+
 }
 // --------------------
 // Borrow Book
@@ -96,15 +104,12 @@ export const uploadFile = async (file, access_token) => {
 // --------------------
 // Get AI Description
 // --------------------
-export async function getAIDescription(book, prompt, access_token) {
+export async function getAIDescription(book, prompt) {
   const response = await api.post(
     "/books-identifier/describe",
     {
       bookId: book.id,
       prompt,
-    },
-    {
-      headers: { Authorization: `Bearer ${access_token}` },
     }
   );
   return response.data.description;

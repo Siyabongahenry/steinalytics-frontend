@@ -68,9 +68,13 @@ export default function LibraryPage() {
             next={fetchMoreBooks}
             hasMore={hasMore}
             loader={
-              <p className="text-center text-gray-400 mt-4">
-                Loading more books...
-              </p>
+                <div className="flex flex-col items-center justify-center bg-gray-900 text-white">
+                      <Spinner />
+                      <p className="text-xl font-semibold animate-pulse">Loading...</p>
+                      <p className="text-gray-400 mt-2 text-sm text-center">
+                        Please wait while we prepare the books
+                      </p>
+                </div>
             }
             endMessage={
               <p className="text-center text-gray-500 mt-4">

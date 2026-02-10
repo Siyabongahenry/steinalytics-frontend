@@ -87,7 +87,7 @@ export default function BookDetailsPage() {
           <Spinner />
           <p className="text-xl font-semibold animate-pulse">Loading...</p>
           <p className="text-gray-400 mt-2 text-sm text-center">
-            Please wait while we prepare your page
+            Please wait while we prepare the book details
           </p>
         </div>
     );
