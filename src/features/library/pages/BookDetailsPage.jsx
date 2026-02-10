@@ -20,8 +20,21 @@ export default function BookDetailsPage() {
   const [loading, setLoading] = useState(false);
   const [rating, setRating] = useState(0);
 
-  useEffect(() => {
-    getBook(id).then((data) => setBook(data));
+  useEffect( () => {
+
+    const fetchBook = async()=>{
+
+      try{
+         const response = await getBook(id);
+          setBook(response.book)
+      }
+      catch(error){
+            console.log(error)
+        }
+      }
+
+    fetchBook()
+   
   }, [id]);
 
   const handleGenerateDescription = async () => {
