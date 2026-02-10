@@ -10,6 +10,7 @@ import {
   StarIcon,
 } from "@heroicons/react/24/outline";
 import toast, { Toaster } from "react-hot-toast";
+import Spinner from "../../../components/Spinner";
 
 export default function BookDetailsPage() {
   const { id } = useParams();
@@ -82,9 +83,13 @@ export default function BookDetailsPage() {
 
   if (!book) {
     return (
-      <div className="min-h-screen bg-gray-900 text-gray-100 flex items-center justify-center">
-        <p className="text-gray-400">Loading book details...</p>
-      </div>
+       <div className="flex flex-col items-center justify-center bg-gray-900 text-white">
+          <Spinner />
+          <p className="text-xl font-semibold animate-pulse">Loading...</p>
+          <p className="text-gray-400 mt-2 text-sm text-center">
+            Please wait while we prepare your page
+          </p>
+        </div>
     );
   }
 
