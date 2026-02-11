@@ -5,8 +5,6 @@ import { useAuth } from "react-oidc-context";
 export default function Header({ setSidebarOpen }) {
   const auth = useAuth();
   const [profileOpen, setProfileOpen] = useState(false);
-  const [redirecting, setRedirecting] = useState(false);
-  const [loggingOut, setLoggingOut] = useState(false);
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -24,29 +22,6 @@ export default function Header({ setSidebarOpen }) {
     auth.user?.profile?.["cognito:username"] ||
     "Guest";
 
-  const handleAuthRedirect = (signup = false) => {
-    setRedirecting(true);
-    const currentPath =
-      window.location.pathname +
-      window.location.search +
-      window.location.hash;
-
-    const options = {
-      state: currentPath,
-      ...(signup && { extraQueryParams: { screen_hint: "signup" } }),
-    };
-
-    auth.signinRedirect(options).catch((err) => {
-      console.error("Signin redirect failed:", err);
-      setRedirecting(false);
-    });
-  };
-
-  const handleLogout = () => {
-    setLoggingOut(true);
-    window.location.href = "/logout";
-  };
-
   return (
     <header className="sticky top-0 z-20 flex items-center justify-between bg-gray-900 shadow-md p-4">
       {/* Mobile sidebar toggle */}
@@ -63,8 +38,11 @@ export default function Header({ setSidebarOpen }) {
         <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-600 to-purple-500 flex items-center justify-center shadow-md">
           <span className="text-white font-extrabold text-lg">S</span>
         </div>
+
         <div className="flex flex-col leading-none">
-          <h1 className="text-xl font-extrabold text-blue-400">Steinalytics</h1>
+          <h1 className="text-xl font-extrabold text-blue-400">
+            Steinalytics
+          </h1>
           <span className="text-xs text-gray-500 tracking-wide">
             Live Data Analytics
           </span>
@@ -77,7 +55,10 @@ export default function Header({ setSidebarOpen }) {
           className="flex items-center gap-1 sm:gap-2 p-1.5 sm:p-2 rounded-md hover:bg-gray-800 transition"
           onClick={() => setProfileOpen(!profileOpen)}
         >
-          <span className="hidden sm:inline">{displayName}</span>
+          {/* Hide name on mobile */}
+          <span className="hidden sm:inline">
+            {displayName}
+          </span>
           <ChevronDownIcon className="w-4 h-4" />
         </button>
 
@@ -85,69 +66,17 @@ export default function Header({ setSidebarOpen }) {
           <div className="absolute right-0 mt-2 w-40 bg-gray-800 rounded-md shadow-lg overflow-hidden">
             {auth.isAuthenticated ? (
               <button
-                onClick={handleLogout}
-                className="w-full text-left px-4 py-2 hover:bg-red-600 transition text-white flex items-center gap-2"
+                onClick={() => (window.location.href = "/logout")}
+                className="w-full text-left px-4 py-2 hover:bg-red-600 transition text-white"
               >
-                {loggingOut ? (
-                  <>
-                    <svg
-                      className="animate-spin h-4 w-4 text-white"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8v8z"
-                      ></path>
-                    </svg>
-                    Logging out...
-                  </>
-                ) : (
-                  "Logout"
-                )}
+                Logout
               </button>
             ) : (
               <button
-                onClick={() => handleAuthRedirect()}
-                className="w-full text-left px-4 py-2 hover:bg-blue-600 transition text-white flex items-center gap-2"
+                onClick={() => auth.signinRedirect()}
+                className="w-full text-left px-4 py-2 hover:bg-blue-600 transition text-white"
               >
-                {redirecting ? (
-                  <>
-                    <svg
-                      className="animate-spin h-4 w-4 text-white"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8v8z"
-                      ></path>
-                    </svg>
-                    Redirecting...
-                  </>
-                ) : (
-                  "Sign In / Register"
-                )}
+                Login / Register
               </button>
             )}
           </div>
