@@ -15,14 +15,21 @@ export default function LibraryPage() {
   const [hasMore, setHasMore] = useState(true);
   const [error, setError] = useState(null);
 
+  // Define your expected page size (adjust to match your API)
+  const PAGE_SIZE = 20;
+
   // Fetch books whenever query, filters, or page changes
   useEffect(() => {
     const fetchBooks = async () => {
       try {
         const data = await getBooks({ query, filters, page });
         const booksArray = data?.books ?? [];
+
         setBooks((prev) => (page === 1 ? booksArray : [...prev, ...booksArray]));
-        setHasMore(booksArray.length > 0);
+
+        // If fewer than PAGE_SIZE items are returned, assume it's the last page
+        setHasMore(booksArray.length === PAGE_SIZE);
+
         setError(null);
       } catch (err) {
         console.error(err);
@@ -53,12 +60,12 @@ export default function LibraryPage() {
       const data = await getBooks({ query, filters, page: nextPage });
       const booksArray = data?.books ?? [];
 
-      if (booksArray.length === 0) {
+      if (booksArray.length < PAGE_SIZE) {
         setHasMore(false);
-      } else {
-        setBooks((prev) => [...prev, ...booksArray]);
-        setPage(nextPage);
       }
+
+      setBooks((prev) => [...prev, ...booksArray]);
+      setPage(nextPage);
     } catch (err) {
       console.error(err);
       setHasMore(false);
