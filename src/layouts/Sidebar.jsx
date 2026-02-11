@@ -4,7 +4,6 @@ import { XMarkIcon, HomeIcon, UsersIcon,UserIcon, DocumentIcon,InformationCircle
 export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
   const links = [
     { to: "/home", name: "Home", icon: HomeIcon },
-     { to: "/profile", name: "Profile", icon: UserIcon },
     { to: "/statistics", name: "Statistics", icon: UsersIcon },
     { to: "/reports", name: "Reports", icon:  DocumentIcon },
     { to: "/email-organizer", name: "Email Organizer", icon:  EnvelopeIcon },
