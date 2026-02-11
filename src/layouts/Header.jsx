@@ -84,7 +84,7 @@ export default function Header({ setSidebarOpen }) {
             ) : (
               <>
                 <button
-                  onClick={() => handleRedirect("login")}
+                  onClick={() => auth.signinRedirect()}
                   className="w-full text-left px-4 py-2 hover:bg-blue-600 transition text-white flex items-center gap-2"
                 >
                   {redirecting === "login" ? (
