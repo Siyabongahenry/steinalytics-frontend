@@ -5,7 +5,7 @@ import { useAuth } from "react-oidc-context";
 export default function Header({ setSidebarOpen }) {
   const auth = useAuth();
   const [profileOpen, setProfileOpen] = useState(false);
-  const [redirecting, setRedirecting] = useState(null); // "login" or "register"
+  const [redirecting, setRedirecting] = useState(false);
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -23,19 +23,20 @@ export default function Header({ setSidebarOpen }) {
     auth.user?.profile?.["cognito:username"] ||
     "Guest";
 
-  const handleRedirect = (type) => {
-    setRedirecting(type);
+  const handleAuthRedirect = (signup = false) => {
+    setRedirecting(true);
+    const currentPath =
+      window.location.pathname +
+      window.location.search +
+      window.location.hash;
 
-    const clientId = import.meta.env.VITE_COGNITO_CLIENT_ID;
-    const cognitoDomain = import.meta.env.VITE_COGNITO_AUTHORITY;
-    const redirectUri = import.meta.env.VITE_COGNITO_REDIRECT_URI; // fixed callback URI registered in Cognito
-    //const currentPath = window.location.pathname + window.location.search;
+    // If signup=true, Cognito will show the registration page
+    const options = {
+      state: currentPath,
+      ...(signup && { extraQueryParams: { screen_hint: "signup" } }),
+    };
 
-    const endpoint = type === "login" ? "login" : "signup";
-
-    window.location.href = `${cognitoDomain}/${endpoint}?client_id=${clientId}&response_type=code&scope=email+openid&redirect_uri=${encodeURIComponent(
-      redirectUri
-    )}`;
+    auth.signinRedirect(options);
   };
 
   return (
@@ -82,73 +83,38 @@ export default function Header({ setSidebarOpen }) {
                 Logout
               </button>
             ) : (
-              <>
-                <button
-                  onClick={() => auth.signinRedirect()}
-                  className="w-full text-left px-4 py-2 hover:bg-blue-600 transition text-white flex items-center gap-2"
-                >
-                  {redirecting === "login" ? (
-                    <>
-                      <svg
-                        className="animate-spin h-4 w-4 text-white"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        ></circle>
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8v8z"
-                        ></path>
-                      </svg>
-                      Redirecting...
-                    </>
-                  ) : (
-                    "Login"
-                  )}
-                </button>
-
-                <button
-                  onClick={() => handleRedirect("register")}
-                  className="w-full text-left px-4 py-2 hover:bg-green-600 transition text-white flex items-center gap-2"
-                >
-                  {redirecting === "register" ? (
-                    <>
-                      <svg
-                        className="animate-spin h-4 w-4 text-white"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        ></circle>
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8v8z"
-                        ></path>
-                      </svg>
-                      Redirecting...
-                    </>
-                  ) : (
-                    "Register"
-                  )}
-                </button>
-              </>
+              <button
+                onClick={() => handleAuthRedirect()}
+                className="w-full text-left px-4 py-2 hover:bg-blue-600 transition text-white flex items-center gap-2"
+              >
+                {redirecting ? (
+                  <>
+                    <svg
+                      className="animate-spin h-4 w-4 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8v8z"
+                      ></path>
+                    </svg>
+                    Redirecting...
+                  </>
+                ) : (
+                  "Sign In / Register"
+                )}
+              </button>
             )}
           </div>
         )}
