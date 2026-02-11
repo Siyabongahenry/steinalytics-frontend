@@ -130,24 +130,23 @@ export default function BookDetailsPage() {
               <li>ISBN: {book.isbn}</li>
               <li>
                 Status:{" "}
-                {book.available ? (
+                {book.status === "available" ? (
                   <span className="text-green-400">Available</span>
                 ) : (
                   <span className="flex items-center gap-2 text-red-400">
                     <ClockIcon className="w-4 h-4" />
-                    {`Borrowed until ${new Date(book.returnDate).toLocaleDateString()}`}
+                    {`Borrowed until ${new Date(book.return_date).toLocaleDateString()}`}
                   </span>
                 )}
               </li>
-              <li>Borrowed {book.borrowCount} times</li>
               <li className="flex items-center gap-2">
                 <UserGroupIcon className="w-4 h-4 text-blue-400" />
-                Waiting list: {book.waitingListCount || 0} people
+                Waiting list: {book.waiting_list?.length || 0} people
               </li>
             </ul>
 
             {/* Borrow / Waiting List */}
-            {book.available ? (
+            {book.status === "available" ? (
               <Link
                 to={`/library/books/${book.id}/borrow`}
                 className="mt-6 inline-block bg-blue-600 hover:bg-blue-500 text-white px-5 py-2 rounded-lg font-semibold transition-colors"
