@@ -4,6 +4,7 @@ import { lazy, Suspense } from "react";
 import ProtectedRoute from "./ProtectedRoute.jsx";
 import Spinner from "../components/Spinner.jsx";
 import LogoutPage from "../pages/LogoutPage.jsx";
+import LogoutSuccess from "../pages/LogoutSuccessPage.jsx"
 import CallbackPage from "../pages/CallbackPage";
 
 /* Lazy-loaded pages */
@@ -65,6 +66,7 @@ export default function AppRoutes() {
           <Route path="/statistics" element={<SitesPage />} />
           <Route path="/hours-calculator" element={<HoursCalculatorPage />} />
           <Route path="/logout" element={<LogoutPage />} />
+          <Route path="/logout-success" element={<LogoutSuccess />} />
         </Route>
 
         {/* Catch-all */}
