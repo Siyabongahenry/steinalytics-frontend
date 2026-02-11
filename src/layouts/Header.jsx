@@ -3,7 +3,7 @@ import { Bars3Icon, ChevronDownIcon } from "@heroicons/react/24/outline";
 import { useAuth } from "react-oidc-context";
 
 export default function Header({ setSidebarOpen }) {
-  const auth = useAuth();s
+  const auth = useAuth();
   const [profileOpen, setProfileOpen] = useState(false);
   const [redirecting, setRedirecting] = useState(null); // "login" or "register"
   const dropdownRef = useRef(null);
