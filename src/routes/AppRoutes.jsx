@@ -57,6 +57,9 @@ export default function AppRoutes() {
         <Route path="/email-organizer" element={<EmailOrganizer />} />
         <Route path="/callback" element={<CallbackPage />} />
 
+        <Route path="/logout-success" element={<LogoutSuccess />} />
+
+
         <Route path="/reports" element={<ReportListPage />} />
         <Route path="/reports/:reportType" element={<ReportAnalyzerPage />} />
 
@@ -66,7 +69,6 @@ export default function AppRoutes() {
           <Route path="/statistics" element={<SitesPage />} />
           <Route path="/hours-calculator" element={<HoursCalculatorPage />} />
           <Route path="/logout" element={<LogoutPage />} />
-          <Route path="/logout-success" element={<LogoutSuccess />} />
         </Route>
 
         {/* Catch-all */}
