@@ -6,6 +6,7 @@ export default function Header({ setSidebarOpen }) {
   const auth = useAuth();
   const [profileOpen, setProfileOpen] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -30,13 +31,20 @@ export default function Header({ setSidebarOpen }) {
       window.location.search +
       window.location.hash;
 
-    // If signup=true, Cognito will show the registration page
     const options = {
       state: currentPath,
       ...(signup && { extraQueryParams: { screen_hint: "signup" } }),
     };
 
-    auth.signinRedirect(options);
+    auth.signinRedirect(options).catch((err) => {
+      console.error("Signin redirect failed:", err);
+      setRedirecting(false);
+    });
+  };
+
+  const handleLogout = () => {
+    setLoggingOut(true);
+    window.location.href = "/logout";
   };
 
   return (
@@ -77,10 +85,36 @@ export default function Header({ setSidebarOpen }) {
           <div className="absolute right-0 mt-2 w-40 bg-gray-800 rounded-md shadow-lg overflow-hidden">
             {auth.isAuthenticated ? (
               <button
-                onClick={() => (window.location.href = "/logout")}
-                className="w-full text-left px-4 py-2 hover:bg-red-600 transition text-white"
+                onClick={handleLogout}
+                className="w-full text-left px-4 py-2 hover:bg-red-600 transition text-white flex items-center gap-2"
               >
-                Logout
+                {loggingOut ? (
+                  <>
+                    <svg
+                      className="animate-spin h-4 w-4 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8v8z"
+                      ></path>
+                    </svg>
+                    Logging out...
+                  </>
+                ) : (
+                  "Logout"
+                )}
               </button>
             ) : (
               <button
