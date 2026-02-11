@@ -29,13 +29,13 @@ export default function Header({ setSidebarOpen }) {
     const clientId = import.meta.env.VITE_COGNITO_CLIENT_ID;
     const cognitoDomain = import.meta.env.VITE_COGNITO_AUTHORITY;
     const redirectUri = import.meta.env.VITE_COGNITO_REDIRECT_URI; // fixed callback URI registered in Cognito
-    const currentPath = window.location.pathname + window.location.search;
+    //const currentPath = window.location.pathname + window.location.search;
 
     const endpoint = type === "login" ? "login" : "signup";
 
     window.location.href = `${cognitoDomain}/${endpoint}?client_id=${clientId}&response_type=code&scope=email+openid&redirect_uri=${encodeURIComponent(
       redirectUri
-    )}&state=${encodeURIComponent(currentPath)}`;
+    )}`;
   };
 
   return (
