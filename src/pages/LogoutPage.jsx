@@ -4,18 +4,13 @@ import { useAuth } from "react-oidc-context";
 export default function LogoutPage() {
   const auth = useAuth();
 
-  const signOutRedirect = () => {
-    const clientId = import.meta.env.VITE_COGNITO_CLIENT_ID;
-    const logoutUri = import.meta.env.VITE_COGNITO_POST_LOGOUT_URI;
-    const cognitoDomain = import.meta.env.VITE_COGNITO_AUTHORITY;
-
+  const signOutRedirect = async () => {
+   
+    await auth.signoutRedirect();
     // Clear local tokens
     auth.removeUser();
-
-    // Redirect to Cognito logout
-    window.location.href = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(
-      logoutUri
-    )}`;
+     
+    
   };
 
   return (
