@@ -8,7 +8,7 @@ export default function LogoutPage() {
    
     await auth.signoutRedirect();
     // Clear local tokens
-    auth.removeUser();
+    await auth.removeUser();
      
     
   };
