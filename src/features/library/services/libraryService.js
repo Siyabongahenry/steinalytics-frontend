@@ -102,12 +102,12 @@ export const identifyBook = async (book, access_token) => {
 // --------------------
 // Get AI Description
 // --------------------
-export async function getAIDescription(book, prompt) {
+export async function getAIDescription(book) {
   const response = await api.post(
     "/books-identifier/describe",
     {
-      bookId: book.id,
-      prompt,
+      title: book.title,
+      author:book.author,
     }
   );
   return response.data.description;
