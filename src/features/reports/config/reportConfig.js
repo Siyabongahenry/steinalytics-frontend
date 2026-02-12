@@ -29,7 +29,16 @@ export const REPORTS = [
     description: "Employees with hours greater than 72 per week",
     icon: FaExclamationTriangle,
     allowMultipleFiles: true,
-  },
+  }
+  ,
+  {
+    type: "exemption/pivoted",
+    title: "Exemption Report Pivoted",
+    description: "Employees with hours greater than 72 per week",
+    icon: FaExclamationTriangle,
+    allowMultipleFiles: true,
+  }
+  ,
   {
     type: "device-clockings",
     title: "Device Clockings Count",
