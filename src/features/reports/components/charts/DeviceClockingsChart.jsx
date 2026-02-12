@@ -18,26 +18,26 @@ import {
 const CustomTooltip = ({ active, payload, label, coordinate }) => {
   if (!active || !payload?.length) return null;
 
-  // Position tooltip to the left of the cursor
   const style = {
     position: "absolute",
-    left: coordinate.x - 160, // shift left (adjust as needed)
-    top: coordinate.y - 40,   // slightly above cursor
+    left: coordinate.x - 160,
+    top: coordinate.y - 40,
     pointerEvents: "none",
     zIndex: 9999,
+    whiteSpace: "nowrap", // enforce no wrapping globally
   };
 
   return (
     <div
       style={style}
-      className="bg-gray-900/95 border border-gray-700 rounded-lg px-4 py-3 shadow-xl"
+      className="bg-gray-900/95 border border-gray-700 rounded-lg px-4 py-3 shadow-xl whitespace-nowrap"
     >
       <p className="text-gray-300 text-xs mb-2">{label}</p>
       <div className="space-y-1">
         {payload.map((p) => (
           <div
             key={p.dataKey}
-            className="flex items-center justify-between gap-4 text-sm"
+            className="flex items-center justify-between gap-4 text-sm whitespace-nowrap"
           >
             <span style={{ color: p.stroke }}>{p.dataKey}</span>
             <span className="text-white font-medium">{p.value}</span>
@@ -47,7 +47,6 @@ const CustomTooltip = ({ active, payload, label, coordinate }) => {
     </div>
   );
 };
-
 
 /* ===============================
    Main component
