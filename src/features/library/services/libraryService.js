@@ -108,6 +108,7 @@ export async function getAIDescription(book) {
     {
       title: book.title,
       author:book.author,
+      isbn:book.isbn
     }
   );
   return response.data.description;
