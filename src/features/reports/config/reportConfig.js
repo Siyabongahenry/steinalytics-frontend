@@ -32,7 +32,7 @@ export const REPORTS = [
   }
   ,
   {
-    type: "exemption/pivoted",
+    type: "exemption-pivoted",
     title: "Exemption Report Pivoted",
     description: "Employees with hours greater than 72 per week",
     icon: FaExclamationTriangle,

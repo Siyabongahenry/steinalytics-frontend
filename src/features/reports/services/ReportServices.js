@@ -8,7 +8,7 @@ const REPORT_ENDPOINTS = {
   "overbooking": "/overbooking",
   "multiple-clockings": "/multiple-clockings",
   "exemption": "/exemption",
-  "exemption/pivoted":"/exemption/pivoted",
+  "exemption-pivoted":"/exemption/pivoted",
   "device-clockings": "/device-clockings",
   "employees-attendance": "/attendance/employee-attendance-summary",
   "employees-on-site": "/attendance/site-summary",
