@@ -111,6 +111,9 @@ export async function getAIDescription(book) {
       isbn:book.isbn
     }
   );
+
+  console.log(response.data)
+  
   return response.data.description;
 }
 
