@@ -6,10 +6,12 @@ function TypingEffect({ text, speed = 30 }) {
   useEffect(() => {
     let i = 0;
     setDisplayedText(""); // reset when text changes
+
     const interval = setInterval(() => {
-      setDisplayedText((prev) => prev + text[i]);
-      i++;
-      if (i >= text.length) {
+      if (i < text.length) {
+        setDisplayedText((prev) => prev + text[i]);
+        i++; // increment AFTER appending
+      } else {
         clearInterval(interval);
       }
     }, speed);
