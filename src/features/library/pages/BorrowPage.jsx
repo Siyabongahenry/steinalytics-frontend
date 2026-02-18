@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getBooks } from "../services/libraryService";
+import { getBook } from "../services/libraryService";
 import BorrowForm from "../components/BorrowForm";
 
 export default function BorrowPage({ onBorrowSuccess }) {
@@ -8,17 +8,30 @@ export default function BorrowPage({ onBorrowSuccess }) {
   const navigate = useNavigate();
   const [book, setBook] = useState(null);
 
-  useEffect(() => {
-    getBooks({ id }).then((data) => setBook(data));
-  }, [id]);
+  useEffect( () => {
 
-  if (!book) {
-    return (
-      <div className="min-h-screen bg-gray-900 text-gray-100 flex items-center justify-center">
-        <p className="text-gray-400">Loading borrow form...</p>
-      </div>
-    );
-  }
+      const fetchBook = async()=>{
+
+        try{
+          const response = await getBook(id);
+            setBook(response.book)
+        }
+        catch(error){
+              console.log(error)
+          }
+        }
+
+      fetchBook()
+    
+    }, [id]);
+
+    if (!book) {
+      return (
+        <div className="min-h-screen bg-gray-900 text-gray-100 flex items-center justify-center">
+          <p className="text-gray-400">Loading borrow form...</p>
+        </div>
+      );
+    }
 
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100 p-6">
@@ -26,7 +39,7 @@ export default function BorrowPage({ onBorrowSuccess }) {
         {/* Left side: Book info */}
         <div className="bg-gray-700 p-6 flex flex-col items-center justify-center">
           <img
-            src={book.cover}
+            src={book.file_url}
             alt={book.title}
             className="w-32 h-48 object-cover rounded-lg shadow-md mb-4"
           />

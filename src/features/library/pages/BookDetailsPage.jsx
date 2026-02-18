@@ -11,13 +11,13 @@ import {
 } from "@heroicons/react/24/outline";
 import toast, { Toaster } from "react-hot-toast";
 import Spinner from "../../../components/Spinner";
+import TypingEffect from "../components/TypingEffect";
 
 export default function BookDetailsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [book, setBook] = useState(null);
   const [description, setDescription] = useState("");
-  const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
   const [rating, setRating] = useState(0);
 
@@ -39,10 +39,7 @@ export default function BookDetailsPage() {
   }, [id]);
 
   const handleGenerateDescription = async () => {
-    if (!prompt.trim()) {
-      toast.error("Please type a request first!");
-      return;
-    }
+  
     try {
       setLoading(true);
       const result = await getAIDescription(book, prompt);
@@ -195,19 +192,12 @@ export default function BookDetailsPage() {
           </h3>
 
           {description ? (
-            <p className="text-gray-300 whitespace-pre-line">{description}</p>
+            <TypingEffect text={description} speed={25} />
           ) : (
             <p className="text-gray-500 text-sm">No description yet. Request one below.</p>
           )}
 
           <div className="mt-4 flex gap-3">
-            <input
-              type="text"
-              placeholder="e.g. 'Summarize this book'"
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              className="flex-1 bg-gray-700 text-gray-100 rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-500"
-            />
             <button
               onClick={handleGenerateDescription}
               disabled={loading}

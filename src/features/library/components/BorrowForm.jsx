@@ -70,8 +70,7 @@ export default function BorrowForm({ book, onClose, onBorrowSuccess }) {
         </div>
 
         {/* Return Date */}
-        <div>
-          <label className="block text-sm text-gray-300 mb-1">Return Date</label>
+                  <label className="block text-sm text-gray-300 mb-1">Return Date</label>
           <input
             type="date"
             value={returnDate}

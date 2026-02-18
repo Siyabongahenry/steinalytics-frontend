@@ -112,8 +112,6 @@ export async function getAIDescription(book) {
     }
   );
 
-  console.log(response.data)
-  
   return response.data.description;
 }
 
